@@ -79,24 +79,8 @@
   #fileInput{ display:none; }
   #fileMeta{ margin-top:14px; font-size:12px; color:var(--ink-dim); display:none; text-align:center; }
 
-  /* mode tabs */
-  .tabs{ display:flex; gap:8px; margin-bottom:16px; }
-  .tab{
-    flex:1; text-align:left; background:var(--panel); border:1px solid var(--line);
-    border-radius:12px; padding:14px 16px; cursor:pointer; color:var(--ink-dim);
-  }
-  .tab .t1{ font-family:var(--mono); font-size:11px; letter-spacing:.05em; }
-  .tab .t2{ font-family:var(--serif); font-weight:600; font-size:18px; color:var(--ink); margin-top:2px; }
-  .tab.active{ border-color:var(--accent); background:var(--panel-2); }
-  .tab.active .t1{ color:var(--accent); }
-
   .row{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; }
   .row:last-child{ margin-bottom:0; }
-  input[type=range]{ width:100%; accent-color:var(--accent); }
-  .slider-row{ margin-bottom:16px; }
-  .slider-row:last-child{ margin-bottom:0; }
-  .slider-row .top{ display:flex; justify-content:space-between; font-size:12px; color:var(--ink-dim); margin-bottom:6px; }
-  .slider-row .val{ color:var(--ink); font-variant-numeric:tabular-nums; }
 
   input[type=text], input[type=password], textarea{
     width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px;
@@ -157,42 +141,6 @@
 
   <div id="modeSection" style="display:none; margin-top:20px">
 
-    <div class="tabs">
-      <div class="tab active" id="tabAi">
-        <div class="t1" data-i18n="tab2Kicker"></div>
-        <div class="t2" data-i18n="tab2Title"></div>
-      </div>
-      <div class="tab" id="tabDsp">
-        <div class="t1" data-i18n="tab1Kicker"></div>
-        <div class="t2" data-i18n="tab1Title"></div>
-      </div>
-    </div>
-
-    <!-- DSP PANEL -->
-    <div class="panel" id="dspPanel" style="display:none">
-      <div class="slider-row">
-        <div class="top"><span data-i18n="lblFlatten"></span><span class="val" id="vFlatten">0.75</span></div>
-        <input type="range" id="flatten" min="0" max="1" step="0.05" value="0.75">
-      </div>
-      <div class="slider-row">
-        <div class="top"><span data-i18n="lblVibrato"></span><span class="val" id="vVibrato">4.5</span></div>
-        <input type="range" id="vibrato" min="1" max="10" step="0.5" value="4.5">
-      </div>
-      <div class="slider-row">
-        <div class="top"><span data-i18n="lblSustain"></span><span class="val" id="vSustain">180</span></div>
-        <input type="range" id="sustain" min="80" max="400" step="10" value="180">
-      </div>
-      <div class="slider-row">
-        <div class="top"><span data-i18n="lblTrigger"></span><span class="val" id="vTrigger">320</span></div>
-        <input type="range" id="trigger" min="150" max="800" step="10" value="320">
-      </div>
-      <div class="row" style="margin-top:22px">
-        <button class="primary" id="runDsp" data-i18n="btnConvert"></button>
-        <span class="hint" style="margin:0" data-i18n="hintNothingLeaves"></span>
-      </div>
-    </div>
-
-    <!-- AI PANEL -->
     <div class="panel" id="aiPanel">
       <div class="label" data-i18n="lblApiKey"></div>
       <input type="password" id="apiKey" placeholder="sk_...">
@@ -234,7 +182,6 @@
       </div>
     </div>
 
-    <p class="hint" id="dspCaveat" style="display:none" data-i18n="dspCaveat"></p>
 
   </div>
 
@@ -254,21 +201,14 @@
       lede: "Upload a solo vocal — a cappella, no music underneath. Monologue clones the voice from it and reads any text you give it in that same voice: the lyrics, or anything else.",
       dzPrimary: "Drop a solo vocal here",
       dzSecondary: "or click to choose · wav, mp3, flac, m4a",
-      tab1Kicker: "OFFLINE · EXPERIMENTAL", tab1Title: "Signal",
-      tab2Kicker: "VOICE + TEXT · ELEVENLABS", tab2Title: "Clone",
-      lblFlatten: "Flatten melody", lblVibrato: "Vibrato cutoff (Hz)",
-      lblSustain: "Held-note length (ms)", lblTrigger: "Compress notes held longer than (ms)",
-      btnConvert: "Convert", hintNothingLeaves: "Nothing leaves your browser.",
       lblApiKey: "ELEVENLABS API KEY", chkRemember: "remember this key in this browser only",
       btnTranscribe: "Fill in from the vocal", hintScribeCost: "Optional: pulls the lyrics out of the recording with ElevenLabs Scribe.",
       lblTranscript: "TEXT TO READ",
       chkKeepVoice: "keep the cloned voice in my ElevenLabs account after",
       btnSpeak: "Read it in this voice", hintCloneSample: "The clone takes its likeness from the uploaded vocal. Longer, cleaner takes (1–2 minutes) give a closer match. Instant voice cloning needs a paid ElevenLabs plan (Starter or higher).",
       lblOriginal: "ORIGINAL", lblConverted: "CONVERTED", btnDownload: "Download WAV",
-      dspCaveat: "Signal mode only flattens the melody of the original take. Rhythm, stretched vowels and sung articulation stay, so it will still sound sung. For real speech, use Clone.",
-      footer: "Files are processed locally and never leave your device — except in Clone mode, which calls the ElevenLabs API directly from your browser. For batch jobs there's a CLI: monologue.py in the repo.",
-      statusDecoding: "Decoding audio…", statusAnalyzing: "Analyzing pitch…", statusDone: "Done.",
-      statusErrorConvert: "Something went wrong converting that file: ",
+      footer: "Your vocal and text go straight from your browser to ElevenLabs under your own API key — nothing passes through any other server. For a free, fully local option there's a CLI: monologue.py in the repo.",
+      statusDecoding: "Decoding audio…", statusDone: "Done.",
       statusNeedKey: "Paste your ElevenLabs API key first.",
       statusUploadingTranscribe: "Uploading for transcription…",
       statusTranscribed: "Lyrics filled in — edit them if needed.",
@@ -280,21 +220,14 @@
       lede: "Загрузи сольный вокал — акапелла, без музыки. Monologue клонирует голос и читает этим голосом любой текст: слова песни или что угодно другое.",
       dzPrimary: "Перетащи вокал сюда",
       dzSecondary: "или нажми, чтобы выбрать файл · wav, mp3, flac, m4a",
-      tab1Kicker: "ОФЛАЙН · ЭКСПЕРИМЕНТ", tab1Title: "Сигнал",
-      tab2Kicker: "ГОЛОС + ТЕКСТ · ELEVENLABS", tab2Title: "Клон",
-      lblFlatten: "Сгладить мелодию", lblVibrato: "Срез вибрато (Гц)",
-      lblSustain: "Длина выдержанной ноты (мс)", lblTrigger: "Сжимать ноты длиннее (мс)",
-      btnConvert: "Конвертировать", hintNothingLeaves: "Ничего не покидает браузер.",
       lblApiKey: "API-КЛЮЧ ELEVENLABS", chkRemember: "запомнить ключ только в этом браузере",
       btnTranscribe: "Взять текст из вокала", hintScribeCost: "Необязательно: распознаёт слова песни через ElevenLabs Scribe.",
       lblTranscript: "ТЕКСТ ДЛЯ ЧТЕНИЯ",
       chkKeepVoice: "оставить клон голоса в аккаунте ElevenLabs после",
       btnSpeak: "Прочитать этим голосом", hintCloneSample: "Клон берёт сходство из загруженного вокала. Чем длиннее и чище запись (1–2 минуты), тем точнее голос. Мгновенный клон доступен на платном тарифе ElevenLabs (Starter и выше).",
       lblOriginal: "ОРИГИНАЛ", lblConverted: "РЕЗУЛЬТАТ", btnDownload: "Скачать WAV",
-      dspCaveat: "Режим «Сигнал» только выравнивает мелодию исходной записи. Ритм, растянутые гласные и певческая подача остаются, поэтому звучать всё равно будет как пение. Для настоящей речи — режим «Клон».",
-      footer: "Файлы обрабатываются локально и никуда не уходят — кроме режима «Клон», который напрямую обращается к API ElevenLabs из браузера. Для пакетной обработки есть CLI: monologue.py в репозитории.",
-      statusDecoding: "Декодирую аудио…", statusAnalyzing: "Анализирую высоту тона…", statusDone: "Готово.",
-      statusErrorConvert: "Не получилось сконвертировать файл: ",
+      footer: "Вокал и текст уходят из браузера напрямую в ElevenLabs по твоему API-ключу — больше ни через какие серверы. Бесплатный полностью локальный вариант — CLI: monologue.py в репозитории.",
+      statusDecoding: "Декодирую аудио…", statusDone: "Готово.",
       statusNeedKey: "Сначала вставь API-ключ ElevenLabs.",
       statusUploadingTranscribe: "Загружаю для распознавания…",
       statusTranscribed: "Текст песни подставлен — поправь, если нужно.",
@@ -327,7 +260,6 @@
   let audioCtx = null;
   let originalMono = null;     // Float32Array
   let originalSr = 0;
-  let mode = "ai";
 
   const $ = (id) => document.getElementById(id);
 
@@ -378,380 +310,11 @@
     return out;
   }
 
-  // ---------------------------------------------------------------------
-  // mode tabs
-  // ---------------------------------------------------------------------
-  $("tabDsp").addEventListener("click", () => setMode("dsp"));
-  $("tabAi").addEventListener("click", () => setMode("ai"));
-  function setMode(m) {
-    mode = m;
-    $("tabDsp").classList.toggle("active", m === "dsp");
-    $("tabAi").classList.toggle("active", m === "ai");
-    $("dspPanel").style.display = m === "dsp" ? "block" : "none";
-    $("aiPanel").style.display = m === "ai" ? "block" : "none";
-    $("dspCaveat").style.display = m === "dsp" ? "block" : "none";
-  }
-
-  // ---------------------------------------------------------------------
-  // sliders
-  // ---------------------------------------------------------------------
-  const sliderPairs = [
-    ["flatten", "vFlatten"], ["vibrato", "vVibrato"],
-    ["sustain", "vSustain"], ["trigger", "vTrigger"],
-  ];
-  for (const [id, out] of sliderPairs) {
-    $(id).addEventListener("input", () => { $(out).textContent = $(id).value; });
-  }
-
   function setStatus(msg, isErr) {
     const el = $("status");
     el.textContent = msg;
     el.classList.toggle("err", !!isErr);
   }
-
-  // =======================================================================
-  // DSP MODE — pitch flatten + vibrato removal + sustain compression
-  // =======================================================================
-
-  const FRAME = 2048;
-  const HOP = FRAME / 4;
-  const MIN_F0 = 70, MAX_F0 = 500;
-  const DECIMATION = 10;
-
-  function hann(n) {
-    const w = new Float32Array(n);
-    for (let i = 0; i < n; i++) w[i] = 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / (n - 1));
-    return w;
-  }
-
-  function decimate(x, factor) {
-    const n = Math.floor(x.length / factor);
-    const y = new Float32Array(n);
-    for (let i = 0; i < n; i++) {
-      let s = 0;
-      const start = i * factor;
-      for (let k = 0; k < factor; k++) s += x[start + k] || 0;
-      y[i] = s / factor;
-    }
-    return y;
-  }
-
-  function autocorrPitch(seg, sr, minLag, maxLag) {
-    let e0 = 0;
-    for (let i = 0; i < seg.length; i++) e0 += seg[i] * seg[i];
-    const rms = Math.sqrt(e0 / seg.length);
-    if (rms < 0.004 || e0 < 1e-8) return { f0: 0, voiced: false };
-
-    let bestLag = -1, bestVal = 0;
-    const hi = Math.min(maxLag, seg.length - 2);
-    for (let lag = minLag; lag <= hi; lag++) {
-      let sum = 0;
-      for (let i = 0; i < seg.length - lag; i++) sum += seg[i] * seg[i + lag];
-      const norm = sum / e0;
-      if (norm > bestVal) { bestVal = norm; bestLag = lag; }
-    }
-    if (bestLag < 0 || bestVal < 0.3) return { f0: 0, voiced: false };
-
-    const acAt = (lag) => {
-      let s = 0;
-      for (let i = 0; i < seg.length - lag; i++) s += seg[i] * seg[i + lag];
-      return s;
-    };
-    const l = Math.max(minLag, bestLag - 1), r = Math.min(hi, bestLag + 1);
-    const yL = acAt(l), yC = acAt(bestLag), yR = acAt(r);
-    const denom = yL - 2 * yC + yR;
-    const shift = denom !== 0 ? 0.5 * (yL - yR) / denom : 0;
-    const refined = Math.max(1, bestLag + shift);
-    return { f0: sr / refined, voiced: true };
-  }
-
-  function analyzePitch(mono, sr) {
-    const decim = decimate(mono, DECIMATION);
-    const decimSr = sr / DECIMATION;
-    const minLag = Math.max(1, Math.floor(decimSr / MAX_F0));
-    const maxLag = Math.ceil(decimSr / MIN_F0);
-    const winDecimLen = Math.max(minLag * 2 + 8, Math.round(FRAME / DECIMATION));
-
-    const numFrames = Math.max(0, Math.floor((mono.length - FRAME) / HOP) + 1);
-    const f0 = new Float32Array(numFrames);
-    const voiced = new Uint8Array(numFrames);
-
-    for (let i = 0; i < numFrames; i++) {
-      const centerOrig = i * HOP + FRAME / 2;
-      const centerDecim = Math.round(centerOrig / DECIMATION);
-      const half = Math.round(winDecimLen / 2);
-      const start = Math.max(0, centerDecim - half);
-      const end = Math.min(decim.length, centerDecim + half);
-      const seg = decim.subarray(start, end);
-      const { f0: est, voiced: v } = autocorrPitch(seg, decimSr, minLag, maxLag);
-      f0[i] = est;
-      voiced[i] = v ? 1 : 0;
-    }
-    return { f0, voiced, numFrames, frameRate: sr / HOP };
-  }
-
-  function gaussianKernel(sigma) {
-    const radius = Math.max(1, Math.ceil(sigma * 3));
-    const k = new Float32Array(radius * 2 + 1);
-    let sum = 0;
-    for (let i = -radius; i <= radius; i++) {
-      const v = Math.exp(-(i * i) / (2 * sigma * sigma));
-      k[i + radius] = v; sum += v;
-    }
-    for (let i = 0; i < k.length; i++) k[i] /= sum;
-    return k;
-  }
-
-  function smoothArray(arr, kernel) {
-    const r = (kernel.length - 1) / 2;
-    const out = new Float32Array(arr.length);
-    for (let i = 0; i < arr.length; i++) {
-      let s = 0;
-      for (let j = -r; j <= r; j++) {
-        const idx = Math.min(arr.length - 1, Math.max(0, i + j));
-        s += arr[idx] * kernel[j + r];
-      }
-      out[i] = s;
-    }
-    return out;
-  }
-
-  function flattenPitch(f0, voiced, frameRate, vibratoCutoffHz, flatten) {
-    const n = f0.length;
-    const anyVoiced = voiced.some((v) => v);
-    if (!anyVoiced) return f0.slice();
-
-    const raw = new Float32Array(n);
-    for (let i = 0; i < n; i++) raw[i] = voiced[i] ? Math.log2(f0[i]) : NaN;
-
-    const filled = raw.slice();
-    let i = 0;
-    while (i < n && Number.isNaN(filled[i])) i++;
-    for (let k = 0; k < i; k++) filled[k] = filled[i];
-    let prev = i;
-    for (let j = i + 1; j < n; j++) {
-      if (!Number.isNaN(filled[j])) {
-        if (j > prev + 1) {
-          for (let k = prev + 1; k < j; k++) {
-            const tt = (k - prev) / (j - prev);
-            filled[k] = filled[prev] * (1 - tt) + filled[j] * tt;
-          }
-        }
-        prev = j;
-      }
-    }
-    for (let k = prev + 1; k < n; k++) filled[k] = filled[prev];
-
-    const sigmaFrames = Math.max(1, frameRate / (2 * Math.PI * vibratoCutoffHz));
-    const smooth = smoothArray(filled, gaussianKernel(sigmaFrames));
-
-    const flat = smooth.slice();
-    let p = 0;
-    while (p < n) {
-      if (voiced[p]) {
-        let q = p;
-        while (q < n && voiced[q]) q++;
-        const seg = Array.from(smooth.slice(p, q)).sort((a, b) => a - b);
-        const med = seg[Math.floor(seg.length / 2)];
-        for (let k = p; k < q; k++) flat[k] = smooth[k] + (med - smooth[k]) * flatten;
-        p = q;
-      } else p++;
-    }
-
-    const target = new Float32Array(n);
-    for (let k = 0; k < n; k++) target[k] = voiced[k] ? Math.pow(2, flat[k]) : 0;
-    return target;
-  }
-
-  // Per-frame varying-ratio resampling (the previous approach) independently
-  // time-warps each overlapping analysis window, so adjacent windows stop
-  // agreeing on where the waveform's own pitch periods fall — the classic
-  // cause of "phasy"/metallic pitch-shift artifacts. TD-PSOLA fixes this by
-  // always cutting grains at the signal's own peaks and re-spacing those
-  // same coherent grains at the target rate, so nothing inside a grain is
-  // ever time-warped.
-
-  function frameArraysToSamples(f0, voiced, targetF0, numFrames, totalSamples) {
-    const sampF0 = new Float32Array(totalSamples);
-    const sampTarget = new Float32Array(totalSamples);
-    const sampVoiced = new Uint8Array(totalSamples);
-
-    for (let s = 0; s < totalSamples; s++) {
-      let fi = Math.round((s - FRAME / 2) / HOP);
-      fi = Math.min(numFrames - 1, Math.max(0, fi));
-      sampVoiced[s] = voiced[fi];
-    }
-    let s = 0;
-    while (s < totalSamples) {
-      if (sampVoiced[s]) {
-        let e = s;
-        while (e < totalSamples && sampVoiced[e]) e++;
-        const fiStart = Math.max(0, Math.round((s - FRAME / 2) / HOP));
-        const fiEnd = Math.min(numFrames - 1, Math.round((e - FRAME / 2) / HOP));
-        for (let k = s; k < e; k++) {
-          const framePos = (k - FRAME / 2) / HOP;
-          const fi0 = Math.max(fiStart, Math.min(fiEnd, Math.floor(framePos)));
-          const fi1 = Math.min(fiEnd, fi0 + 1);
-          const tt = Math.min(1, Math.max(0, framePos - fi0));
-          sampF0[k] = f0[fi0] * (1 - tt) + f0[fi1] * tt;
-          sampTarget[k] = targetF0[fi0] * (1 - tt) + targetF0[fi1] * tt;
-        }
-        s = e;
-      } else s++;
-    }
-    return { sampF0, sampTarget, sampVoiced };
-  }
-
-  function findAnalysisMarks(mono, sampF0, sampVoiced, sr) {
-    const marks = [];
-    const n = mono.length;
-    const defaultPeriod = Math.round(sr / 150); // filler spacing for unvoiced/silence
-    let pos = 0;
-    while (pos < n) {
-      const voiced = sampVoiced[pos] === 1;
-      const period = (voiced && sampF0[pos] > 0)
-        ? Math.max(4, Math.round(sr / sampF0[pos]))
-        : defaultPeriod;
-      marks.push({ pos, period });
-      let next = pos + period;
-      if (voiced) {
-        // snap to the nearest real waveform peak so the grain we cut later
-        // is centered on an actual pitch-period landmark, not a guess
-        const radius = Math.max(2, Math.round(period * 0.25));
-        const lo = Math.max(0, next - radius), hi = Math.min(n - 1, next + radius);
-        let bestPos = next, bestVal = -1;
-        for (let i = lo; i <= hi; i++) {
-          const v = Math.abs(mono[i]);
-          if (v > bestVal) { bestVal = v; bestPos = i; }
-        }
-        next = bestPos;
-      }
-      pos = next > pos ? next : pos + 1;
-    }
-    return marks;
-  }
-
-  function psolaResynthesize(mono, sampF0, sampTarget, sampVoiced, sr) {
-    const n = mono.length;
-    const marks = findAnalysisMarks(mono, sampF0, sampVoiced, sr);
-    const out = new Float32Array(n);
-    const wsum = new Float32Array(n);
-    const defaultPeriod = Math.round(sr / 150);
-
-    let synPos = 0, markIdx = 0;
-    while (synPos < n) {
-      const voiced = sampVoiced[synPos] === 1;
-      const synPeriod = (voiced && sampTarget[synPos] > 0)
-        ? Math.max(4, Math.round(sr / sampTarget[synPos]))
-        : defaultPeriod;
-
-      while (markIdx < marks.length - 1 && marks[markIdx + 1].pos <= synPos) markIdx++;
-      const m = marks[markIdx];
-      const half = Math.max(8, m.period);
-      const winLen = half * 2;
-      for (let k = -half; k < half; k++) {
-        const src = m.pos + k, dst = synPos + k;
-        if (src < 0 || src >= n || dst < 0 || dst >= n) continue;
-        const w = 0.5 - 0.5 * Math.cos((2 * Math.PI * (k + half)) / (winLen - 1));
-        out[dst] += mono[src] * w;
-        wsum[dst] += w;
-      }
-      synPos += synPeriod;
-    }
-    for (let i = 0; i < n; i++) if (wsum[i] > 1e-6) out[i] /= wsum[i];
-    return out;
-  }
-
-  function spliceOutRegions(y, cuts, fadeLen) {
-    if (!cuts.length) return y;
-    const segments = [];
-    let cursor = 0;
-    for (const [cs, ce] of cuts) {
-      const fs = Math.max(cursor, cs - fadeLen);
-      const actualFade = Math.max(0, Math.min(fadeLen, cs - fs, y.length - ce));
-      segments.push(y.subarray(cursor, fs));
-      const blend = new Float32Array(actualFade);
-      for (let k = 0; k < actualFade; k++) {
-        const tt = actualFade > 1 ? k / (actualFade - 1) : 0;
-        blend[k] = (y[fs + k] ?? 0) * (1 - tt) + (y[ce + k] ?? 0) * tt;
-      }
-      segments.push(blend);
-      cursor = ce + actualFade;
-    }
-    segments.push(y.subarray(cursor));
-    const total = segments.reduce((s, a) => s + a.length, 0);
-    const out = new Float32Array(total);
-    let off = 0;
-    for (const seg of segments) { out.set(seg, off); off += seg.length; }
-    return out;
-  }
-
-  function findSustainCuts(f0, voiced, frameRate, sustainMs, triggerMs) {
-    const triggerFrames = Math.round((triggerMs / 1000) * frameRate);
-    const targetFrames = Math.max(1, Math.round((sustainMs / 1000) * frameRate));
-    const cuts = [];
-    let i = 0, n = voiced.length;
-    while (i < n) {
-      if (voiced[i]) {
-        let j = i;
-        while (j < n && voiced[j]) j++;
-        const length = j - i;
-        if (length > triggerFrames) {
-          const seg = Array.from(f0.slice(i, j)).filter((v) => v > 0);
-          if (seg.length) {
-            const med = seg.slice().sort((a, b) => a - b)[Math.floor(seg.length / 2)];
-            const cents = seg.map((v) => 1200 * Math.log2(v / med));
-            const std = Math.sqrt(cents.reduce((s, v) => s + v * v, 0) / cents.length);
-            const nDropFrames = length - targetFrames;
-            if (std <= 80 && nDropFrames > 0) {
-              const cutStart = i + Math.floor((length - nDropFrames) / 2);
-              const cutEnd = cutStart + nDropFrames;
-              cuts.push([cutStart * HOP, cutEnd * HOP]);
-            }
-          }
-        }
-        i = j;
-      } else i++;
-    }
-    return cuts;
-  }
-
-  function dspConvert(mono, sr, opts) {
-    const { f0, voiced, numFrames, frameRate } = analyzePitch(mono, sr);
-    const target = flattenPitch(f0, voiced, frameRate, opts.vibratoCutoff, opts.flatten);
-    const { sampF0, sampTarget, sampVoiced } = frameArraysToSamples(f0, voiced, target, numFrames, mono.length);
-    let y = psolaResynthesize(mono, sampF0, sampTarget, sampVoiced, sr);
-    // held-note detection must run on the RAW pitch, not the flattened one —
-    // flattening already squashes cents-variance toward 0, so checking the
-    // flattened contour here made almost every phrase look "held" and got
-    // it wrongly time-compressed.
-    const cuts = findSustainCuts(f0, voiced, frameRate, opts.sustainMs, opts.triggerMs);
-    y = spliceOutRegions(y, cuts, Math.round(0.02 * sr));
-    return y;
-  }
-
-  $("runDsp").addEventListener("click", async () => {
-    if (!originalMono) return;
-    $("runDsp").disabled = true;
-    setStatus(t("statusAnalyzing"));
-    await new Promise((r) => setTimeout(r, 30));
-    try {
-      const opts = {
-        flatten: parseFloat($("flatten").value),
-        vibratoCutoff: parseFloat($("vibrato").value),
-        sustainMs: parseFloat($("sustain").value),
-        triggerMs: parseFloat($("trigger").value),
-      };
-      const y = dspConvert(originalMono, originalSr, opts);
-      setStatus(t("statusDone"));
-      showResult(y, originalSr);
-    } catch (e) {
-      console.error(e);
-      setStatus(t("statusErrorConvert") + e.message, true);
-    } finally {
-      $("runDsp").disabled = false;
-    }
-  });
 
   // =======================================================================
   // AI MODE — ElevenLabs Scribe (transcribe) + instant voice clone (speak)
