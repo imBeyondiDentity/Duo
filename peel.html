@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Peel — audio from video</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎧</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
+<style>
+:root{
+  --bg:#0e0d0c; --panel:#171513; --line:#2c2824; --text:#ece6de;
+  --muted:#8f877d; --accent:#ff6a1a; --accent-dim:#5a2a10;
+  --serif:"Playfair Display",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0;background:var(--bg);color:var(--text)}
+body{font-family:var(--mono);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+main{max-width:720px;margin:0 auto;padding:48px 20px 64px;position:relative}
+header{text-align:center;margin:0 auto 36px;max-width:46ch}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(64px,14vw,112px);line-height:.85;margin:0;letter-spacing:-.02em}
+.sub{color:var(--muted);margin:14px auto 0}
+.lang{position:absolute;top:48px;right:20px;display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex-shrink:0}
+.lang button{background:none;border:0;color:var(--muted);font:inherit;font-size:12px;padding:6px 12px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--text);color:var(--bg)}
+
+.drop{display:block;border:1px dashed var(--accent);border-radius:14px;padding:44px 20px;text-align:center;cursor:pointer;transition:background .15s}
+.drop:hover,.drop.over{background:#1a1411}
+.drop strong{display:block;font-family:var(--serif);font-weight:400;font-size:30px;margin-bottom:6px}
+.drop span{color:var(--muted);font-size:12px}
+.drop input{position:absolute;width:1px;height:1px;opacity:0}
+
+.work{display:none;margin-top:28px}
+.work.on{display:block}
+.file{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+.file .name{font-family:var(--serif);font-size:26px;word-break:break-all}
+.meta{color:var(--muted);font-size:12px}
+.change{background:none;border:0;color:var(--accent);font:inherit;font-size:12px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+canvas{display:block;width:100%;height:110px;margin:18px 0 8px;border-bottom:1px solid var(--line);touch-action:none;cursor:ew-resize}
+.trim{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:26px;font-size:12px;color:var(--muted)}
+.trim b{color:var(--text);font-weight:400}
+
+.row{display:grid;grid-template-columns:130px 1fr;gap:10px 16px;align-items:center;margin-bottom:14px}
+.row > label{color:var(--muted);font-size:12px}
+.seg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;width:100%}
+.seg button{width:100%;text-align:center;white-space:nowrap;background:var(--panel);border:1px solid var(--line);color:var(--text);font:inherit;font-size:13px;padding:10px 8px;border-radius:8px;cursor:pointer}
+.seg button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+.seg.big button{font-family:var(--serif);font-size:24px;padding:6px 22px}
+.hide{display:none!important}
+
+.go{margin-top:22px;width:100%;background:var(--accent);color:#140a04;border:0;border-radius:10px;font:600 15px var(--mono);padding:16px;cursor:pointer}
+.go:disabled{background:var(--accent-dim);color:#b98c70;cursor:progress}
+.bar{height:3px;background:var(--line);margin-top:12px;border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .1s}
+.status{min-height:1.5em;margin-top:10px;color:var(--muted);font-size:12px}
+.status.err{color:#ff8a7a}
+
+.result{display:none;margin-top:26px;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.result.on{display:block}
+.result audio{width:100%;margin-bottom:14px}
+.dl{display:inline-block;color:var(--bg);background:var(--text);text-decoration:none;padding:10px 16px;border-radius:8px;font-weight:600}
+.result .meta{margin-left:10px}
+
+footer{margin-top:56px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:16px}
+footer a{color:var(--text)}
+button:focus-visible,.drop:focus-within,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (max-width:520px){
+  main{padding-top:76px}
+  .row{grid-template-columns:1fr;gap:6px}
+  .lang{top:20px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Peel</h1>
+      <p class="sub" data-i18n="sub"></p>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button data-lang="ru" aria-pressed="true">RU</button>
+      <button data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+
+  <label class="drop" id="drop">
+    <input type="file" id="file" accept="video/*,audio/*,.mkv,.mov,.m4v">
+    <strong data-i18n="dropTitle"></strong>
+    <span data-i18n="dropHint"></span>
+  </label>
+
+  <section class="work" id="work">
+    <div class="file">
+      <div>
+        <div class="name" id="fname"></div>
+        <div class="meta" id="fmeta"></div>
+      </div>
+      <button class="change" id="change" data-i18n="change"></button>
+    </div>
+    <canvas id="wave" aria-label="Waveform"></canvas>
+    <div class="trim">
+      <span><b id="tsel"></b> <span id="tdur"></span></span>
+      <button class="change" id="treset" data-i18n="full"></button>
+    </div>
+
+    <div class="row">
+      <label data-i18n="format"></label>
+      <div class="seg big" data-key="format">
+        <button data-v="mp3" aria-pressed="true">MP3</button>
+        <button data-v="wav" aria-pressed="false">WAV</button>
+      </div>
+    </div>
+    <div class="row" id="rowKbps">
+      <label data-i18n="bitrate"></label>
+      <div class="seg" data-key="kbps">
+        <button data-v="128" aria-pressed="false">128</button>
+        <button data-v="192" aria-pressed="false">192</button>
+        <button data-v="256" aria-pressed="false">256</button>
+        <button data-v="320" aria-pressed="true">320</button>
+      </div>
+    </div>
+    <div class="row hide" id="rowBits">
+      <label data-i18n="bits"></label>
+      <div class="seg" data-key="bits">
+        <button data-v="16" aria-pressed="true">16 bit</button>
+        <button data-v="24" aria-pressed="false">24 bit</button>
+      </div>
+    </div>
+    <div class="row">
+      <label data-i18n="rate"></label>
+      <div class="seg" data-key="rate">
+        <button data-v="44100" aria-pressed="true">44.1 kHz</button>
+        <button data-v="48000" aria-pressed="false">48 kHz</button>
+      </div>
+    </div>
+    <div class="row">
+      <label data-i18n="channels"></label>
+      <div class="seg" data-key="mono">
+        <button data-v="0" aria-pressed="true" data-i18n="stereo"></button>
+        <button data-v="1" aria-pressed="false" data-i18n="mono"></button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label data-i18n="loud"></label>
+      <div class="seg" data-key="norm">
+        <button data-v="off" aria-pressed="true" data-i18n="off"></button>
+        <button data-v="peak" aria-pressed="false" data-i18n="peak"></button>
+        <button data-v="-14" aria-pressed="false">−14 LUFS</button>
+        <button data-v="-16" aria-pressed="false">−16 LUFS</button>
+      </div>
+    </div>
+    <div class="row">
+      <label data-i18n="fades"></label>
+      <div class="seg" data-key="fade">
+        <button data-v="0" aria-pressed="true" data-i18n="none"></button>
+        <button data-v="1" aria-pressed="false" data-i18n="s1"></button>
+        <button data-v="3" aria-pressed="false" data-i18n="s3"></button>
+        <button data-v="5" aria-pressed="false" data-i18n="s5"></button>
+      </div>
+    </div>
+
+    <button class="go" id="go" data-i18n="extract"></button>
+    <div class="bar"><i id="prog"></i></div>
+    <div class="status" id="status" role="status"></div>
+
+    <div class="result" id="result">
+      <audio id="player" controls></audio>
+      <a class="dl" id="dl" data-i18n="download"></a>
+      <span class="meta" id="rmeta"></span>
+    </div>
+  </section>
+
+  <footer>
+    <span data-i18n="privacy"></span>
+    <span data-i18n="cli"></span>
+  </footer>
+</main>
+
+<script>
+const T = {
+  ru: {
+    sub: "Достаёт звуковую дорожку из видео и сохраняет в MP3 или WAV. Всё происходит в браузере — файл никуда не загружается.",
+    dropTitle: "Перетащи видео сюда",
+    dropHint: "или нажми, чтобы выбрать · MP4, MOV, WEBM и другие",
+    change: "Выбрать другой файл",
+    format: "Формат", bitrate: "Битрейт, kbps", bits: "Разрядность",
+    rate: "Частота", channels: "Каналы", stereo: "Стерео", mono: "Моно",
+    extract: "Извлечь аудио", download: "Скачать",
+    reading: "Читаю звук из файла…",
+    encoding: "Кодирую",
+    done: "Готово",
+    big: "Большой файл — браузеру может не хватить памяти. Для длинных видео надёжнее Python-версия.",
+    decodeErr: "Браузер не смог прочитать звук из этого файла. Возможно, в нём нет аудио или кодек не поддерживается. Python-версия читает любые форматы через ffmpeg.",
+    lameErr: "MP3-кодер не загрузился (нет интернета?). Выбери WAV или обнови страницу.",
+    ch: n => n === 1 ? "моно" : n + " кан.",
+    full: "Весь трек", sec: "с", loud: "Громкость", off: "Выкл", peak: "Пик −1 dB",
+    fades: "Фейды", none: "Нет", s1: "1 с", s3: "3 с", s5: "5 с",
+    processing: "Обрабатываю…",
+    limited: v => "Готово · пик не дал поднять громкость выше, вышло " + v + " LUFS",
+    privacy: "Файлы обрабатываются локально и не покидают устройство. ",
+    cli: "Для пакетной обработки есть CLI: peel.py в репозитории."
+  },
+  en: {
+    sub: "Pulls the audio track out of a video and saves it as MP3 or WAV. Everything runs in your browser — the file is never uploaded.",
+    dropTitle: "Drop a video here",
+    dropHint: "or click to choose · MP4, MOV, WEBM and more",
+    change: "Choose another file",
+    format: "Format", bitrate: "Bitrate, kbps", bits: "Bit depth",
+    rate: "Sample rate", channels: "Channels", stereo: "Stereo", mono: "Mono",
+    extract: "Extract audio", download: "Download",
+    reading: "Reading audio from the file…",
+    encoding: "Encoding",
+    done: "Done",
+    big: "Large file — the browser may run out of memory. For long videos the Python version is more reliable.",
+    decodeErr: "The browser couldn't read audio from this file. It may have no audio track, or the codec isn't supported. The Python version reads any format via ffmpeg.",
+    lameErr: "The MP3 encoder didn't load (offline?). Choose WAV or reload the page.",
+    ch: n => n === 1 ? "mono" : n + " ch",
+    full: "Full track", sec: "s", loud: "Loudness", off: "Off", peak: "Peak −1 dB",
+    fades: "Fades", none: "None", s1: "1 s", s3: "3 s", s5: "5 s",
+    processing: "Processing…",
+    limited: v => "Done · the peak limit capped loudness at " + v + " LUFS",
+    privacy: "Files are processed locally and never leave your device. ",
+    cli: "For batch jobs there's a CLI: peel.py in the repo."
+  }
+};
+let lang = (navigator.language || "ru").startsWith("ru") ? "ru" : "en";
+const t = k => T[lang][k];
+
+const $ = s => document.querySelector(s);
+const state = { file: null, buffer: null, format: "mp3", kbps: 320, bits: 16, rate: 44100, mono: false, norm: "off", fade: 0, sel: { s: 0, e: 0 }, peaks: null, drag: null, url: null };
+const tick = () => new Promise(r => setTimeout(r, 0));
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === lang));
+  if (state.buffer) { showMeta(); showSel(); }
+}
+document.querySelectorAll(".lang button").forEach(b => b.onclick = () => { lang = b.dataset.lang; applyLang(); });
+
+// segmented controls
+document.querySelectorAll(".seg").forEach(seg => {
+  seg.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+    const k = seg.dataset.key, v = b.dataset.v;
+    state[k] = k === "format" || k === "norm" ? v : k === "mono" ? v === "1" : Number(v);
+    $("#rowKbps").classList.toggle("hide", state.format !== "mp3");
+    $("#rowBits").classList.toggle("hide", state.format !== "wav");
+    if (k === "fade") drawWave();
+  });
+});
+
+// file input
+const drop = $("#drop"), input = $("#file");
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => { const f = e.dataTransfer.files[0]; if (f) load(f); });
+input.addEventListener("change", () => { if (input.files[0]) load(input.files[0]); });
+$("#change").onclick = () => input.click();
+
+function setStatus(msg, err) { const s = $("#status"); s.textContent = msg || ""; s.classList.toggle("err", !!err); }
+function setProg(p) { $("#prog").style.width = (Math.max(0, Math.min(1, p)) * 100) + "%"; }
+function fmtTime(s) { const m = Math.floor(s / 60), r = Math.floor(s % 60); return m + ":" + String(r).padStart(2, "0"); }
+function fmtSize(b) { return b > 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.ceil(b / 1024) + " KB"; }
+
+async function decode(file, rate) {
+  const ab = await file.arrayBuffer();
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  const ctx = new Ctx({ sampleRate: rate });
+  try { return await ctx.decodeAudioData(ab); } finally { ctx.close && ctx.close(); }
+}
+
+function showMeta() {
+  const b = state.buffer;
+  $("#fmeta").textContent = fmtTime(b.duration) + "  ·  " + t("ch")(b.numberOfChannels) + "  ·  " + fmtSize(state.file.size);
+}
+
+async function load(file) {
+  state.file = file; state.buffer = null;
+  $("#work").classList.add("on"); $("#result").classList.remove("on");
+  $("#fname").textContent = file.name; $("#fmeta").textContent = "";
+  clearWave(); setProg(0);
+  setStatus(file.size > 1024 * 1048576 ? t("big") : t("reading"));
+  try {
+    state.buffer = await decode(file, state.rate);
+    state.sel = { s: 0, e: state.buffer.duration }; state.peaks = null;
+    showMeta(); drawWave(); showSel();
+    if (file.size <= 1024 * 1048576) setStatus("");
+  } catch (e) {
+    console.error(e); setStatus(t("decodeErr"), true);
+  }
+}
+
+function clearWave() { const c = $("#wave"); c.getContext("2d").clearRect(0, 0, c.width, c.height); $("#tsel").textContent = ""; $("#tdur").textContent = ""; }
+
+function fmtT(x) { const m = Math.floor(x / 60), r = x - m * 60; return m + ":" + r.toFixed(1).padStart(4, "0"); }
+function showSel() {
+  const { s, e } = state.sel;
+  $("#tsel").textContent = fmtT(s) + " — " + fmtT(e);
+  $("#tdur").textContent = "· " + (e - s).toFixed(1) + " " + t("sec");
+}
+
+function drawWave() {
+  const buf = state.buffer; if (!buf) return;
+  const c = $("#wave"), dpr = window.devicePixelRatio || 1;
+  const W = c.width = c.clientWidth * dpr, H = c.height = c.clientHeight * dpr;
+  const g = c.getContext("2d");
+  const barW = 3 * dpr, gap = 2 * dpr, bars = Math.floor(W / (barW + gap));
+  if (!state.peaks || state.peaks.length !== bars) {
+    const d = buf.getChannelData(0), d2 = buf.numberOfChannels > 1 ? buf.getChannelData(1) : null;
+    const step = Math.floor(d.length / bars) || 1, peaks = []; let max = 0;
+    for (let i = 0; i < bars; i++) {
+      let p = 0; const s = i * step, e = Math.min(s + step, d.length);
+      for (let j = s; j < e; j += 16) { const v = Math.abs(d2 ? (d[j] + d2[j]) / 2 : d[j]); if (v > p) p = v; }
+      peaks.push(p); if (p > max) max = p;
+    }
+    state.peaks = peaks.map(p => p / (max || 1));
+  }
+  const css = getComputedStyle(document.documentElement);
+  const on = css.getPropertyValue("--accent"), off = css.getPropertyValue("--line"), txt = css.getPropertyValue("--text");
+  const xs = state.sel.s / buf.duration * W, xe = state.sel.e / buf.duration * W;
+  const fd = Math.min(state.fade, (state.sel.e - state.sel.s) / 2);
+  state.peaks.forEach((p, i) => {
+    const x = i * (barW + gap), tc = (x + barW / 2) / W * buf.duration;
+    const inSel = x + barW / 2 >= xs && x + barW / 2 <= xe;
+    let k = 1;
+    if (inSel && fd > 0) k = Math.pow(Math.min(1, (tc - state.sel.s) / fd, (state.sel.e - tc) / fd), 3);
+    const h = Math.max(dpr, p * k * H * 0.86);
+    g.fillStyle = inSel ? on : off;
+    g.fillRect(x, (H - h) / 2, barW, h);
+  });
+  g.fillStyle = txt;
+  [xs, xe].forEach((x, k) => {
+    const hx = Math.min(Math.max(x, dpr), W - dpr);
+    g.fillRect(hx - dpr, 0, 2 * dpr, H);
+    const gw = 8 * dpr, gh = 22 * dpr, gx = k ? hx - gw : hx;
+    g.beginPath(); g.roundRect ? g.roundRect(gx, (H - gh) / 2, gw, gh, 3 * dpr) : g.rect(gx, (H - gh) / 2, gw, gh); g.fill();
+  });
+}
+window.addEventListener("resize", drawWave);
+
+// trim handles
+const wave = $("#wave");
+function timeAt(e) {
+  const r = wave.getBoundingClientRect();
+  return Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * state.buffer.duration;
+}
+function moveHandle(e) {
+  const x = timeAt(e), min = 0.1;
+  if (state.drag === "s") state.sel.s = Math.min(x, state.sel.e - min);
+  else state.sel.e = Math.max(x, state.sel.s + min);
+  state.sel.s = Math.max(0, state.sel.s); state.sel.e = Math.min(state.buffer.duration, state.sel.e);
+  drawWave(); showSel();
+}
+wave.addEventListener("pointerdown", e => {
+  if (!state.buffer) return;
+  const x = timeAt(e);
+  state.drag = Math.abs(x - state.sel.s) <= Math.abs(x - state.sel.e) ? "s" : "e";
+  wave.setPointerCapture(e.pointerId); moveHandle(e);
+});
+wave.addEventListener("pointermove", e => { if (state.drag) moveHandle(e); });
+["pointerup", "pointercancel"].forEach(ev => wave.addEventListener(ev, () => { state.drag = null; }));
+$("#treset").onclick = () => { if (!state.buffer) return; state.sel = { s: 0, e: state.buffer.duration }; drawWave(); showSel(); };
+
+// ---- DSP ----
+function biquad(x, b0, b1, b2, a0, a1, a2) {
+  b0 /= a0; b1 /= a0; b2 /= a0; a1 /= a0; a2 /= a0;
+  const y = new Float32Array(x.length); let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+  for (let i = 0; i < x.length; i++) {
+    const xi = x[i], yi = b0 * xi + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
+    x2 = x1; x1 = xi; y2 = y1; y1 = yi; y[i] = yi;
+  }
+  return y;
+}
+function kWeight(x, r) { // ITU-R BS.1770 K-weighting (libebur128 formulation)
+  const Vh = Math.pow(10, 3.999843853973347 / 20), Vb = Math.pow(Vh, 0.4996667741545416);
+  let Q = 0.7071752369554196, K = Math.tan(Math.PI * 1681.974450955533 / r), a0 = 1 + K / Q + K * K;
+  const y = biquad(x, (Vh + Vb * K / Q + K * K) / a0, 2 * (K * K - Vh) / a0, (Vh - Vb * K / Q + K * K) / a0,
+    1, 2 * (K * K - 1) / a0, (1 - K / Q + K * K) / a0);
+  Q = 0.5003270373253953; K = Math.tan(Math.PI * 38.13547087613982 / r); a0 = 1 + K / Q + K * K;
+  return biquad(y, 1, -2, 1, 1, 2 * (K * K - 1) / a0, (1 - K / Q + K * K) / a0);
+}
+function lufs(chs, r) {
+  const hop = Math.round(0.1 * r), n = chs[0].length, segs = Math.floor(n / hop);
+  if (segs < 4) return -Infinity;
+  const seg = new Float64Array(segs);
+  for (const c of chs) {
+    const k = kWeight(c, r);
+    for (let j = 0; j < segs; j++) { let s = 0; for (let i = j * hop, e = i + hop; i < e; i++) s += k[i] * k[i]; seg[j] += s; }
+  }
+  const z = []; for (let j = 0; j + 4 <= segs; j++) z.push((seg[j] + seg[j + 1] + seg[j + 2] + seg[j + 3]) / (4 * hop));
+  const lk = v => -0.691 + 10 * Math.log10(v), mean = a => a.reduce((x, y) => x + y, 0) / a.length;
+  const g1 = z.filter(v => lk(v) > -70); if (!g1.length) return -Infinity;
+  const rel = lk(mean(g1)) - 10, g2 = g1.filter(v => lk(v) > rel);
+  return lk(mean(g2));
+}
+function normalize(chs, r, mode) {
+  let peak = 0; for (const c of chs) for (let i = 0; i < c.length; i++) { const v = Math.abs(c[i]); if (v > peak) peak = v; }
+  if (!peak) return "";
+  const ceil = Math.pow(10, -1 / 20); let g, note = "";
+  if (mode === "peak") g = ceil / peak;
+  else {
+    const L = lufs(chs, r); if (!isFinite(L)) return "";
+    g = Math.pow(10, (Number(mode) - L) / 20);
+    if (peak * g > ceil) { g = ceil / peak; note = t("limited")((L + 20 * Math.log10(g)).toFixed(1)); }
+  }
+  for (const c of chs) for (let i = 0; i < c.length; i++) c[i] *= g;
+  return note;
+}
+function applyFades(chs, r, sec) {
+  const n = chs[0].length, f = Math.min(Math.floor(sec * r), Math.floor(n / 2));
+  for (const c of chs) for (let i = 0; i < f; i++) {
+    const g = Math.pow(i / f, 3); c[i] *= g; c[n - 1 - i] *= g;
+  }
+}
+function render(buf) {
+  const r = buf.sampleRate, s = Math.floor(state.sel.s * r), e = Math.min(buf.length, Math.ceil(state.sel.e * r));
+  const chs = channels(buf, state.mono).map(c => c.slice(s, e));
+  const note = state.norm !== "off" ? normalize(chs, r, state.norm) : "";
+  if (state.fade > 0) applyFades(chs, r, state.fade);
+  return { chs, note };
+}
+
+function channels(buf, mono) {
+  if (buf.numberOfChannels === 1) return [buf.getChannelData(0)];
+  const L = buf.getChannelData(0), R = buf.getChannelData(1);
+  if (!mono) return [L, R];
+  const M = new Float32Array(L.length);
+  for (let i = 0; i < L.length; i++) M[i] = (L[i] + R[i]) / 2;
+  return [M];
+}
+
+async function encodeWAV(chs, rate, bits, onProg) {
+  const n = chs[0].length, c = chs.length, bps = bits / 8, dataLen = n * c * bps;
+  const buf = new ArrayBuffer(44 + dataLen), v = new DataView(buf);
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, "RIFF"); v.setUint32(4, 36 + dataLen, true); w(8, "WAVE"); w(12, "fmt ");
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, c, true);
+  v.setUint32(24, rate, true); v.setUint32(28, rate * c * bps, true);
+  v.setUint16(32, c * bps, true); v.setUint16(34, bits, true);
+  w(36, "data"); v.setUint32(40, dataLen, true);
+  let o = 44; const chunk = rate * 5;
+  for (let i = 0; i < n; i++) {
+    for (let ch = 0; ch < c; ch++) {
+      const s = Math.max(-1, Math.min(1, chs[ch][i]));
+      if (bits === 16) { v.setInt16(o, s < 0 ? s * 0x8000 : s * 0x7fff, true); o += 2; }
+      else {
+        const x = Math.round(s < 0 ? s * 0x800000 : s * 0x7fffff);
+        v.setUint8(o, x & 255); v.setUint8(o + 1, (x >> 8) & 255); v.setUint8(o + 2, (x >> 16) & 255); o += 3;
+      }
+    }
+    if (i % chunk === 0) { onProg(i / n); await tick(); }
+  }
+  return new Blob([buf], { type: "audio/wav" });
+}
+
+async function encodeMP3(chs, rate, kbps, onProg) {
+  const enc = new lamejs.Mp3Encoder(chs.length, rate, kbps);
+  const toI16 = f => {
+    const out = new Int16Array(f.length);
+    for (let i = 0; i < f.length; i++) { const s = Math.max(-1, Math.min(1, f[i])); out[i] = s < 0 ? s * 0x8000 : s * 0x7fff; }
+    return out;
+  };
+  const L = toI16(chs[0]), R = chs[1] ? toI16(chs[1]) : null;
+  const parts = [], block = 1152, n = L.length, every = block * 256;
+  for (let i = 0; i < n; i += block) {
+    const l = L.subarray(i, i + block);
+    const out = R ? enc.encodeBuffer(l, R.subarray(i, i + block)) : enc.encodeBuffer(l);
+    if (out.length) parts.push(new Uint8Array(out));
+    if (i % every === 0) { onProg(i / n); await tick(); }
+  }
+  const end = enc.flush(); if (end.length) parts.push(new Uint8Array(end));
+  return new Blob(parts, { type: "audio/mpeg" });
+}
+
+$("#go").onclick = async () => {
+  if (!state.file) return;
+  const go = $("#go"); go.disabled = true; $("#result").classList.remove("on"); setProg(0);
+  try {
+    if (state.format === "mp3" && typeof lamejs === "undefined") throw new Error("lame");
+    if (!state.buffer || state.buffer.sampleRate !== state.rate) {
+      setStatus(t("reading")); await tick();
+      state.buffer = await decode(state.file, state.rate); state.peaks = null; drawWave(); showMeta();
+    }
+    setStatus(t("processing")); await tick();
+    const { chs, note } = render(state.buffer);
+    const prog = p => { setProg(p); setStatus(t("encoding") + " " + Math.round(p * 100) + "%"); };
+    const blob = state.format === "mp3"
+      ? await encodeMP3(chs, state.rate, state.kbps, prog)
+      : await encodeWAV(chs, state.rate, state.bits, prog);
+    setProg(1);
+    if (state.url) URL.revokeObjectURL(state.url);
+    state.url = URL.createObjectURL(blob);
+    const full = state.sel.s < 0.05 && state.sel.e > state.buffer.duration - 0.05;
+    const base = state.file.name.replace(/\.[^.]+$/, "") + (full ? "" : "_cut");
+    const a = $("#dl"); a.href = state.url; a.download = base + "." + state.format;
+    $("#player").src = state.url;
+    const spec = state.format === "mp3" ? state.kbps + " kbps" : state.bits + " bit";
+    $("#rmeta").textContent = state.format.toUpperCase() + "  ·  " + spec + "  ·  " + (state.rate / 1000) + " kHz  ·  " + fmtT(chs[0].length / state.rate) + "  ·  " + fmtSize(blob.size);
+    $("#result").classList.add("on");
+    setStatus(note || t("done"));
+  } catch (e) {
+    console.error(e);
+    setStatus(e.message === "lame" ? t("lameErr") : t("decodeErr"), true);
+  } finally { go.disabled = false; }
+};
+
+applyLang();
+</script>
+</body>
+</html>
