@@ -100,7 +100,7 @@
   button:disabled{ opacity:.4; cursor:default; }
   button:disabled:hover{ border-color:var(--line); filter:none; }
 
-  #status{ font-size:12px; color:var(--ink-dim); margin-top:14px; min-height:1.4em; }
+  #status{ font-size:12px; color:var(--ink-dim); margin-top:14px; min-height:1.4em; overflow-wrap:anywhere; }
   #status.err{ color:var(--accent); }
 
   .result{ display:none; }
@@ -109,6 +109,7 @@
   audio{ width:100%; margin-top:6px; }
   .download-row{ margin-top:20px; display:flex; gap:10px; }
 
+  body{ overflow-wrap:anywhere; }
   .hint{ font-size:12px; color:var(--ink-dim); margin-top:14px; }
   .hint code{ background:var(--bg); border:1px solid var(--line); padding:1px 5px; border-radius:4px; }
 
@@ -328,6 +329,17 @@
     if ($("rememberKey").checked) localStorage.setItem("monologue_key", $("apiKey").value);
   });
 
+  async function apiErrorMessage(res) {
+    let bodyText = "";
+    try { bodyText = await res.text(); } catch (_) { /* ignore */ }
+    try {
+      const data = JSON.parse(bodyText);
+      const msg = (data && data.detail && (data.detail.message || data.detail)) || (data && data.message);
+      if (msg) return `${res.status}: ${msg}`;
+    } catch (_) { /* not JSON */ }
+    return `${res.status}: ${bodyText.slice(0, 200)}`;
+  }
+
   $("transcribeBtn").addEventListener("click", async () => {
     if (!originalMono) return;
     const key = $("apiKey").value.trim();
@@ -342,7 +354,7 @@
       const res = await fetch("https://api.elevenlabs.io/v1/speech-to-text", {
         method: "POST", headers: { "xi-api-key": key }, body: form,
       });
-      if (!res.ok) throw new Error(`ElevenLabs said ${res.status}: ${await res.text()}`);
+      if (!res.ok) throw new Error(await apiErrorMessage(res));
       const data = await res.json();
       $("transcript").value = data.text || "";
       setStatus(t("statusTranscribed"));
@@ -370,7 +382,7 @@
       const cloneRes = await fetch("https://api.elevenlabs.io/v1/voices/add", {
         method: "POST", headers: { "xi-api-key": key }, body: cloneForm,
       });
-      if (!cloneRes.ok) throw new Error(`voice clone failed (${cloneRes.status}): ${await cloneRes.text()}`);
+      if (!cloneRes.ok) throw new Error(await apiErrorMessage(cloneRes));
       const cloneData = await cloneRes.json();
       voiceId = cloneData.voice_id;
 
@@ -380,7 +392,7 @@
         headers: { "xi-api-key": key, "Content-Type": "application/json" },
         body: JSON.stringify({ text, model_id: "eleven_multilingual_v2" }),
       });
-      if (!ttsRes.ok) throw new Error(`speech generation failed (${ttsRes.status}): ${await ttsRes.text()}`);
+      if (!ttsRes.ok) throw new Error(await apiErrorMessage(ttsRes));
       const mp3Buf = await ttsRes.arrayBuffer();
 
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
