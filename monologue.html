@@ -45,6 +45,7 @@
   .lang button[aria-pressed="true"]{ background:var(--ink); color:var(--bg); }
 
   /* hero */
+  .kicker{ display:block; text-align:center; color:var(--accent); font-size:12px; letter-spacing:.18em; margin-bottom:18px; }
   h1.hero{
     font-family:var(--serif); font-weight:900; letter-spacing:-.02em;
     font-size:clamp(64px, 14vw, 112px); line-height:.85; text-align:center;
@@ -126,6 +127,7 @@
 
   <header>
     <div>
+      <span class="kicker" data-i18n="kicker"></span>
       <h1 class="hero">Monologue</h1>
       <p class="lede" data-i18n="lede"></p>
     </div>
@@ -203,6 +205,7 @@
   // ---------------------------------------------------------------------
   const STR = {
     en: {
+      kicker: "SING TO SPEECH",
       lede: "Upload a solo vocal — a cappella, no music underneath. Monologue clones the voice from it and reads any text you give it in that same voice: the lyrics, or anything else.",
       dzPrimary: "Drop a solo vocal here",
       dzSecondary: "or click to choose · wav, mp3, flac, m4a",
@@ -222,6 +225,7 @@
       statusCloning: "Cloning the voice…", statusSpeaking: "Speaking it back…",
     },
     ru: {
+      kicker: "ПЕНИЕ В РЕЧЬ",
       lede: "Загрузи сольный вокал — акапелла, без музыки. Monologue клонирует голос и читает этим голосом любой текст: слова песни или что угодно другое.",
       dzPrimary: "Перетащи вокал сюда",
       dzSecondary: "или нажми · wav, mp3, flac, m4a",
