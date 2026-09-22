@@ -70,6 +70,9 @@ canvas{display:block;width:100%;height:110px;margin:18px 0 8px;border-bottom:1px
 
 footer{margin-top:56px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:16px}
 footer a{color:var(--text)}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-family:var(--mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 16px;transition:border-color .15s,color .15s}
+.back-link:hover{border-color:var(--accent);color:var(--text)}
+.back-row{text-align:right;margin-top:32px}
 button:focus-visible,.drop:focus-within,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @media (max-width:520px){
   main{padding-top:76px}
@@ -185,12 +188,17 @@ button:focus-visible,.drop:focus-within,a:focus-visible{outline:2px solid var(--
     <span data-i18n="privacy"></span>
     <span data-i18n="cli"></span>
   </footer>
+
+  <div class="back-row"><a class="back-link" href="index.html" data-i18n="back"></a></div>
 </main>
+
+
 
 <script>
 const T = {
   ru: {
     kicker: "ИЗВЛЕЧЕНИЕ ЗВУКА",
+    back: "← Обратно",
     sub: "Достаёт звуковую дорожку из видео и сохраняет в MP3 или WAV. Всё происходит в браузере — файл никуда не загружается.",
     dropTitle: "Перетащи видео сюда",
     dropHint: "или нажми, чтобы выбрать · MP4, MOV, WEBM и другие",
@@ -214,6 +222,7 @@ const T = {
   },
   en: {
     kicker: "AUDIO EXTRACTOR",
+    back: "← Back",
     sub: "Pulls the audio track out of a video and saves it as MP3 or WAV. Everything runs in your browser — the file is never uploaded.",
     dropTitle: "Drop a video here",
     dropHint: "or click to choose · MP4, MOV, WEBM and more",

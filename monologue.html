@@ -115,6 +115,9 @@
   .divider{ border:none; border-top:1px solid var(--line); margin:48px 0 26px; }
   footer{ font-size:13px; color:var(--ink-dim); line-height:1.75; }
   footer code{ background:var(--panel); border:1px solid var(--line); padding:1px 6px; border-radius:4px; }
+  .back-link{ display:inline-flex; align-items:center; gap:6px; color:var(--ink-dim); font-family:var(--mono); font-size:12px; text-decoration:none; border:1px solid var(--line); border-radius:999px; padding:8px 16px; transition:border-color .15s,color .15s; }
+  .back-link:hover{ border-color:var(--accent); color:var(--ink); }
+  .back-row{ text-align:right; margin-top:32px; }
 
   @media (max-width:520px){
     .wrap{ padding-top:76px; }
@@ -194,6 +197,8 @@
 
   <hr class="divider">
   <footer data-i18n="footer"></footer>
+
+  <div class="back-row"><a class="back-link" href="index.html" data-i18n="back"></a></div>
 </div>
 
 <script>
@@ -206,6 +211,7 @@
   const STR = {
     en: {
       kicker: "SING TO SPEECH",
+      back: "← Back",
       lede: "Upload a solo vocal — a cappella, no music underneath. Monologue clones the voice from it and reads any text you give it in that same voice: the lyrics, or anything else.",
       dzPrimary: "Drop a solo vocal here",
       dzSecondary: "or click to choose · wav, mp3, flac, m4a",
@@ -226,6 +232,7 @@
     },
     ru: {
       kicker: "ПЕНИЕ В РЕЧЬ",
+      back: "← Обратно",
       lede: "Загрузи сольный вокал — акапелла, без музыки. Monologue клонирует голос и читает этим голосом любой текст: слова песни или что угодно другое.",
       dzPrimary: "Перетащи вокал сюда",
       dzSecondary: "или нажми · wav, mp3, flac, m4a",
