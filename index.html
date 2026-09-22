@@ -2,493 +2,94 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Monologue</title>
-<link rel="icon" href="data:,">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Duo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎚️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#0e0d0c;
-    --panel:#171513;
-    --panel-2:#1e1c1a;
-    --line:#2c2824;
-    --ink:#ece6de;
-    --ink-dim:#8f877d;
-    --accent:#ff6a1a;
-    --accent-soft:rgba(255,106,26,.06);
-    --accent-fill:#5a2a10;
-    --serif:'Playfair Display', ui-serif, Georgia, serif;
-    --mono:'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{
-    background:var(--bg); color:var(--ink);
-    font-family:var(--mono); font-size:14px; line-height:1.6;
-    min-height:100vh;
-  }
-  a{color:var(--accent)}
-  .wrap{max-width:720px; margin:0 auto; padding:48px 20px 64px; position:relative;}
+:root{
+  --bg:#0e0d0c; --panel:#171513; --line:#2c2824; --text:#ece6de;
+  --muted:#8f877d; --accent:#ff6a1a; --accent-dim:#5a2a10;
+  --serif:"Playfair Display",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0;background:var(--bg);color:var(--text);height:100%}
+body{font-family:var(--mono);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+main{max-width:640px;margin:0 auto;padding:88px 20px 64px;position:relative}
 
-  /* header + language toggle — identical to Peel */
-  header{ text-align:center; margin:0 auto 36px; max-width:46ch; }
-  .lang{
-    position:absolute; top:48px; right:20px; display:flex;
-    border:1px solid var(--line); border-radius:999px; overflow:hidden; flex-shrink:0;
-  }
-  .lang button{
-    font-family:var(--mono); background:none; border:0; color:var(--ink-dim);
-    font-size:12px; padding:6px 12px; cursor:pointer;
-  }
-  .lang button[aria-pressed="true"]{ background:var(--ink); color:var(--bg); }
+.lang{position:absolute;top:48px;right:20px;display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.lang button{background:none;border:0;color:var(--muted);font:inherit;font-size:12px;padding:6px 12px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--text);color:var(--bg)}
 
-  /* hero */
-  h1.hero{
-    font-family:var(--serif); font-weight:900; letter-spacing:-.02em;
-    font-size:clamp(64px, 14vw, 112px); line-height:.85; text-align:center;
-    margin:0;
-  }
-  .lede{
-    text-align:center; color:var(--ink-dim); max-width:46ch;
-    margin:14px auto 0;
-  }
+.kicker{display:block;text-align:center;color:var(--accent);font-size:12px;letter-spacing:.18em;margin-bottom:18px}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(56px,14vw,92px);line-height:.9;margin:0;letter-spacing:-.02em;text-align:center}
+.lede{color:var(--muted);text-align:center;max-width:42ch;margin:16px auto 44px}
 
-  .panel{
-    background:var(--panel); border:1px solid var(--line);
-    border-radius:14px; padding:22px; margin-bottom:18px;
-  }
-  .label{ font-size:11px; letter-spacing:.06em; color:var(--ink-dim); display:block; margin-bottom:8px; }
+.cards{display:flex;flex-direction:column;gap:16px}
+.card{display:block;border:1px solid var(--line);border-radius:18px;padding:26px 24px;text-decoration:none;color:inherit;transition:border-color .15s,background .15s}
+.card:hover,.card:focus-visible{border-color:var(--accent);background:#1a1411}
+.card b{font-family:var(--serif);font-weight:900;color:var(--accent);font-size:20px;font-style:normal}
+.card span{color:var(--muted)}
 
-  /* dropzone, matching the Peel reference */
-  #dropzone{
-    border:1px solid var(--line); border-radius:18px;
-    background:transparent;
-    padding:44px 20px; text-align:center; cursor:pointer;
-    transition:border-color .15s ease,background .15s ease;
-  }
-  #dropzone:hover, #dropzone.drag{ border-color:var(--accent); background:#1a1411; }
-  #dropzone .dz-primary{
-    font-family:var(--serif); font-weight:600; color:var(--ink);
-    font-size:clamp(24px, 6.5vw, 32px); margin-bottom:12px;
-  }
-  #dropzone .dz-secondary{ font-size:12.5px; color:var(--ink-dim); }
-  #fileInput{ display:none; }
-  #fileMeta{ margin-top:14px; font-size:12px; color:var(--ink-dim); display:none; text-align:center; }
+footer{margin-top:48px;text-align:center;color:var(--muted);font-size:12px}
+footer i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:middle;font-style:normal}
 
-  .row{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; }
-  .row:last-child{ margin-bottom:0; }
-
-  input[type=text], input[type=password], textarea{
-    width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px;
-    color:var(--ink); font-family:var(--mono); font-size:13px; padding:10px 12px;
-  }
-  textarea{ resize:vertical; min-height:70px; }
-  label.check{ display:flex; align-items:center; gap:8px; color:var(--ink-dim); font-size:12px; }
-
-  button{
-    font-family:var(--mono); font-size:13px; letter-spacing:.02em;
-    border-radius:8px; border:1px solid var(--line); cursor:pointer;
-    background:var(--panel-2); color:var(--ink); padding:11px 18px;
-  }
-  button:hover{ border-color:var(--accent); }
-  button.primary{ background:var(--accent); border-color:var(--accent); color:#160b06; font-weight:500; }
-  button.primary:hover{ filter:brightness(1.08); }
-  button:disabled{ opacity:.4; cursor:default; }
-  button:disabled:hover{ border-color:var(--line); filter:none; }
-
-  #status{ font-size:12px; color:var(--ink-dim); margin-top:14px; min-height:1.4em; overflow-wrap:anywhere; }
-  #status.err{ color:var(--accent); }
-
-  .result{ display:none; }
-  canvas{ width:100%; height:70px; display:block; border-radius:8px; background:var(--bg); }
-  .wave-label{ font-size:11px; color:var(--ink-dim); margin:14px 0 6px; }
-  audio{ width:100%; margin-top:6px; }
-  .download-row{ margin-top:20px; display:flex; gap:10px; }
-
-  body{ overflow-wrap:anywhere; }
-  .hint{ font-size:12px; color:var(--ink-dim); margin-top:14px; }
-  .hint code{ background:var(--bg); border:1px solid var(--line); padding:1px 5px; border-radius:4px; }
-
-  .divider{ border:none; border-top:1px solid var(--line); margin:48px 0 26px; }
-  footer{ font-size:13px; color:var(--ink-dim); line-height:1.75; }
-  footer code{ background:var(--panel); border:1px solid var(--line); padding:1px 6px; border-radius:4px; }
-
-  @media (max-width:520px){
-    .wrap{ padding-top:76px; }
-    .lang{ top:20px; }
-  }
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (max-width:520px){ main{padding-top:76px} .lang{top:20px} }
 </style>
 </head>
 <body>
-<div class="wrap">
-
-  <header>
-    <div>
-      <h1 class="hero">Monologue</h1>
-      <p class="lede" data-i18n="lede"></p>
-    </div>
-    <div class="lang" role="group" aria-label="Language">
-      <button data-lang="ru" aria-pressed="true">RU</button>
-      <button data-lang="en" aria-pressed="false">EN</button>
-    </div>
-  </header>
-
-  <div class="panel" style="padding:0; background:transparent; border:none;">
-    <div id="dropzone">
-      <div class="dz-primary" data-i18n="dzPrimary"></div>
-      <div class="dz-secondary" data-i18n="dzSecondary"></div>
-      <input id="fileInput" type="file" accept="audio/*,.wav,.mp3,.flac,.m4a,.aac,.ogg,.aiff,.wma">
-    </div>
-    <div id="fileMeta"></div>
+<main>
+  <div class="lang" role="group" aria-label="Language">
+    <button data-lang="ru" aria-pressed="true">RU</button>
+    <button data-lang="en" aria-pressed="false">EN</button>
   </div>
 
-  <div id="modeSection" style="display:none; margin-top:20px">
+  <span class="kicker" data-i18n="kicker"></span>
+  <h1>Duo</h1>
+  <p class="lede" data-i18n="lede"></p>
 
-    <div class="panel" id="aiPanel">
-      <div class="label" data-i18n="lblApiKey"></div>
-      <input type="password" id="apiKey" placeholder="sk_...">
-      <label class="check" style="margin-top:8px">
-        <input type="checkbox" id="rememberKey"> <span data-i18n="chkRemember"></span>
-      </label>
-
-      <div class="label" style="margin-top:22px" data-i18n="lblTranscript"></div>
-      <textarea id="transcript" rows="6"></textarea>
-      <div class="row" style="margin-top:10px; align-items:flex-start">
-        <button id="transcribeBtn" data-i18n="btnTranscribe"></button>
-        <span class="hint" style="margin:0" data-i18n="hintScribeCost"></span>
-      </div>
-
-      <div class="row" style="margin-top:16px">
-        <label class="check">
-          <input type="checkbox" id="keepVoice"> <span data-i18n="chkKeepVoice"></span>
-        </label>
-      </div>
-      <div class="row" style="margin-top:16px">
-        <button class="primary" id="runAi" data-i18n="btnSpeak"></button>
-      </div>
-      <p class="hint" data-i18n="hintCloneSample"></p>
-    </div>
-
-    <div id="status"></div>
-
-    <div class="panel result" id="resultPanel">
-      <div class="wave-label" data-i18n="lblOriginal"></div>
-      <canvas id="waveOrig"></canvas>
-      <audio id="audioOrig" controls></audio>
-
-      <div class="wave-label" style="margin-top:22px" data-i18n="lblConverted"></div>
-      <canvas id="waveOut"></canvas>
-      <audio id="audioOut" controls></audio>
-
-      <div class="download-row">
-        <a id="downloadLink" download="monologue.wav"><button class="primary" data-i18n="btnDownload"></button></a>
-      </div>
-    </div>
-
-
+  <div class="cards">
+    <a class="card" href="peel.html">
+      <b>Peel</b> <span data-i18n="peel"></span>
+    </a>
+    <a class="card" href="monologue.html">
+      <b>Monologue</b> <span data-i18n="mono"></span>
+    </a>
   </div>
 
-  <hr class="divider">
-  <footer data-i18n="footer"></footer>
-</div>
+  <footer><i></i>Duo</footer>
+</main>
 
 <script>
-(() => {
-  "use strict";
-
-  // ---------------------------------------------------------------------
-  // i18n
-  // ---------------------------------------------------------------------
-  const STR = {
-    en: {
-      lede: "Upload a solo vocal — a cappella, no music underneath. Monologue clones the voice from it and reads any text you give it in that same voice: the lyrics, or anything else.",
-      dzPrimary: "Drop a solo vocal here",
-      dzSecondary: "or click to choose · wav, mp3, flac, m4a",
-      lblApiKey: "ELEVENLABS API KEY", chkRemember: "remember this key in this browser only",
-      btnTranscribe: "Fill in from the vocal", hintScribeCost: "Optional: pulls the lyrics out of the recording with ElevenLabs Scribe.",
-      lblTranscript: "TEXT TO READ",
-      chkKeepVoice: "keep the cloned voice in my ElevenLabs account after",
-      btnSpeak: "Read it in this voice", hintCloneSample: "The clone takes its likeness from the uploaded vocal. Longer, cleaner takes (1–2 minutes) give a closer match. Instant voice cloning needs a paid ElevenLabs plan (Starter or higher).",
-      lblOriginal: "ORIGINAL", lblConverted: "CONVERTED", btnDownload: "Download WAV",
-      footer: "Your vocal and text go straight from your browser to ElevenLabs under your own API key — nothing passes through any other server. For a free, fully local option there's a CLI: monologue.py in the repo.",
-      statusDecoding: "Decoding audio…", statusDone: "Done.",
-      statusNeedKey: "Paste your ElevenLabs API key first.",
-      statusUploadingTranscribe: "Uploading for transcription…",
-      statusTranscribed: "Lyrics filled in — edit them if needed.",
-      statusTranscribeFailed: "Transcription failed: ",
-      statusNeedKeyAndText: "Need both an API key and some text to read.", statusNeedVocal: "Upload a vocal first — the voice is cloned from it.",
-      statusCloning: "Cloning the voice…", statusSpeaking: "Speaking it back…",
-    },
-    ru: {
-      lede: "Загрузи сольный вокал — акапелла, без музыки. Monologue клонирует голос и читает этим голосом любой текст: слова песни или что угодно другое.",
-      dzPrimary: "Перетащи вокал сюда",
-      dzSecondary: "или нажми · wav, mp3, flac, m4a",
-      lblApiKey: "API-КЛЮЧ ELEVENLABS", chkRemember: "запомнить ключ только в этом браузере",
-      btnTranscribe: "Взять текст из вокала", hintScribeCost: "Необязательно: распознаёт слова песни через ElevenLabs Scribe.",
-      lblTranscript: "ТЕКСТ ДЛЯ ЧТЕНИЯ",
-      chkKeepVoice: "оставить клон голоса в аккаунте ElevenLabs после",
-      btnSpeak: "Прочитать этим голосом", hintCloneSample: "Клон берёт сходство из загруженного вокала. Чем длиннее и чище запись (1–2 минуты), тем точнее голос. Мгновенный клон доступен на платном тарифе ElevenLabs (Starter и выше).",
-      lblOriginal: "ОРИГИНАЛ", lblConverted: "РЕЗУЛЬТАТ", btnDownload: "Скачать WAV",
-      footer: "Вокал и текст уходят из браузера напрямую в ElevenLabs по твоему API-ключу — больше ни через какие серверы. Бесплатный полностью локальный вариант — CLI: monologue.py в репозитории.",
-      statusDecoding: "Декодирую аудио…", statusDone: "Готово.",
-      statusNeedKey: "Сначала вставь API-ключ ElevenLabs.",
-      statusUploadingTranscribe: "Загружаю для распознавания…",
-      statusTranscribed: "Текст песни подставлен — поправь, если нужно.",
-      statusTranscribeFailed: "Распознавание не удалось: ",
-      statusNeedKeyAndText: "Нужен и ключ, и текст для чтения.", statusNeedVocal: "Сначала загрузи вокал — голос клонируется из него.",
-      statusCloning: "Клонирую голос…", statusSpeaking: "Озвучиваю…",
-    },
-  };
-
-  let lang = localStorage.getItem("monologue_lang") || "ru";
-  const t = (key) => STR[lang][key] ?? key;
-
-  function applyLang() {
-    document.documentElement.lang = lang;
-    document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
-    document.querySelectorAll(".lang button").forEach((b) => { b.setAttribute("aria-pressed", b.dataset.lang === lang); });
+const T = {
+  ru: {
+    kicker: "AUDIO TOOLKIT",
+    lede: "Два маленьких инструмента для звука. Ничего никуда не загружается — всё работает прямо в браузере.",
+    peel: "— достаёт звук из видео и сохраняет в MP3 или WAV",
+    mono: "— превращает пение в речь тем же голосом"
+  },
+  en: {
+    kicker: "AUDIO TOOLKIT",
+    lede: "Two small audio tools. Nothing is uploaded anywhere — everything runs right in your browser.",
+    peel: "— pulls the sound out of a video and saves it as MP3 or WAV",
+    mono: "— turns singing into speech, same voice"
   }
-  document.querySelectorAll(".lang button").forEach((b) => {
-    b.addEventListener("click", () => {
-      lang = b.dataset.lang;
-      localStorage.setItem("monologue_lang", lang);
-      applyLang();
-    });
-  });
-  applyLang();
-
-  // ---------------------------------------------------------------------
-  // state
-  // ---------------------------------------------------------------------
-  let audioCtx = null;
-  let originalMono = null;     // Float32Array
-  let originalSr = 0;
-
-  const $ = (id) => document.getElementById(id);
-
-  // ---------------------------------------------------------------------
-  // file loading
-  // ---------------------------------------------------------------------
-  const dropzone = $("dropzone");
-  const fileInput = $("fileInput");
-
-  dropzone.addEventListener("click", () => fileInput.click());
-  dropzone.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.classList.add("drag"); });
-  dropzone.addEventListener("dragleave", () => dropzone.classList.remove("drag"));
-  dropzone.addEventListener("drop", (e) => {
-    e.preventDefault();
-    dropzone.classList.remove("drag");
-    if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
-  });
-  fileInput.addEventListener("change", (e) => {
-    if (e.target.files[0]) loadFile(e.target.files[0]);
-  });
-
-  async function loadFile(file) {
-    setStatus(t("statusDecoding"));
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const arrayBuf = await file.arrayBuffer();
-    const buf = await audioCtx.decodeAudioData(arrayBuf.slice(0));
-    originalSr = buf.sampleRate;
-    originalMono = mixToMono(buf);
-
-    $("fileMeta").style.display = "block";
-    $("fileMeta").textContent = `${file.name} · ${buf.duration.toFixed(1)}s · ${buf.sampleRate} Hz`;
-    $("modeSection").style.display = "block";
-    $("resultPanel").style.display = "none";
-    setStatus("");
-
-    const key = localStorage.getItem("monologue_key");
-    if (key) { $("apiKey").value = key; $("rememberKey").checked = true; }
-  }
-
-  function mixToMono(buf) {
-    if (buf.numberOfChannels === 1) return buf.getChannelData(0).slice();
-    const n = buf.length;
-    const out = new Float32Array(n);
-    for (let c = 0; c < buf.numberOfChannels; c++) {
-      const ch = buf.getChannelData(c);
-      for (let i = 0; i < n; i++) out[i] += ch[i] / buf.numberOfChannels;
-    }
-    return out;
-  }
-
-  function setStatus(msg, isErr) {
-    const el = $("status");
-    el.textContent = msg;
-    el.classList.toggle("err", !!isErr);
-  }
-
-  // =======================================================================
-  // AI MODE — ElevenLabs Scribe (transcribe) + instant voice clone (speak)
-  // =======================================================================
-
-  $("rememberKey").addEventListener("change", () => {
-    if ($("rememberKey").checked) localStorage.setItem("monologue_key", $("apiKey").value);
-    else localStorage.removeItem("monologue_key");
-  });
-  $("apiKey").addEventListener("input", () => {
-    if ($("rememberKey").checked) localStorage.setItem("monologue_key", $("apiKey").value);
-  });
-
-  async function apiErrorMessage(res) {
-    let bodyText = "";
-    try { bodyText = await res.text(); } catch (_) { /* ignore */ }
-    try {
-      const data = JSON.parse(bodyText);
-      const msg = (data && data.detail && (data.detail.message || data.detail)) || (data && data.message);
-      if (msg) return `${res.status}: ${msg}`;
-    } catch (_) { /* not JSON */ }
-    return `${res.status}: ${bodyText.slice(0, 200)}`;
-  }
-
-  $("transcribeBtn").addEventListener("click", async () => {
-    if (!originalMono) return;
-    const key = $("apiKey").value.trim();
-    if (!key) { setStatus(t("statusNeedKey"), true); return; }
-    $("transcribeBtn").disabled = true;
-    setStatus(t("statusUploadingTranscribe"));
-    try {
-      const blob = encodeWav(originalMono, originalSr);
-      const form = new FormData();
-      form.append("file", blob, "vocal.wav");
-      form.append("model_id", "scribe_v2");
-      const res = await fetch("https://api.elevenlabs.io/v1/speech-to-text", {
-        method: "POST", headers: { "xi-api-key": key }, body: form,
-      });
-      if (!res.ok) throw new Error(await apiErrorMessage(res));
-      const data = await res.json();
-      $("transcript").value = data.text || "";
-      setStatus(t("statusTranscribed"));
-    } catch (e) {
-      console.error(e);
-      setStatus(t("statusTranscribeFailed") + e.message, true);
-    } finally {
-      $("transcribeBtn").disabled = false;
-    }
-  });
-
-  $("runAi").addEventListener("click", async () => {
-    const key = $("apiKey").value.trim();
-    const text = $("transcript").value.trim();
-    if (!originalMono) { setStatus(t("statusNeedVocal"), true); return; }
-    if (!key || !text) { setStatus(t("statusNeedKeyAndText"), true); return; }
-    $("runAi").disabled = true;
-    setStatus(t("statusCloning"));
-    let voiceId = null;
-    try {
-      const sampleBlob = encodeWav(originalMono, originalSr);
-      const cloneForm = new FormData();
-      cloneForm.append("name", "monologue-temp-" + Date.now());
-      cloneForm.append("files", sampleBlob, "sample.wav");
-      const cloneRes = await fetch("https://api.elevenlabs.io/v1/voices/add", {
-        method: "POST", headers: { "xi-api-key": key }, body: cloneForm,
-      });
-      if (!cloneRes.ok) throw new Error(await apiErrorMessage(cloneRes));
-      const cloneData = await cloneRes.json();
-      voiceId = cloneData.voice_id;
-
-      setStatus(t("statusSpeaking"));
-      const ttsRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-        method: "POST",
-        headers: { "xi-api-key": key, "Content-Type": "application/json" },
-        body: JSON.stringify({ text, model_id: "eleven_multilingual_v2" }),
-      });
-      if (!ttsRes.ok) throw new Error(await apiErrorMessage(ttsRes));
-      const mp3Buf = await ttsRes.arrayBuffer();
-
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const decoded = await audioCtx.decodeAudioData(mp3Buf.slice(0));
-      const mono = mixToMono(decoded);
-      setStatus(t("statusDone"));
-      showResult(mono, decoded.sampleRate);
-    } catch (e) {
-      console.error(e);
-      setStatus(e.message, true);
-    } finally {
-      if (voiceId && !$("keepVoice").checked) {
-        try {
-          await fetch(`https://api.elevenlabs.io/v1/voices/${voiceId}`, {
-            method: "DELETE", headers: { "xi-api-key": key },
-          });
-        } catch (_) { /* not fatal */ }
-      }
-      $("runAi").disabled = false;
-    }
-  });
-
-  // =======================================================================
-  // shared: result display, waveform drawing, WAV export
-  // =======================================================================
-
-  function drawWave(canvas, mono) {
-    const ctx = canvas.getContext("2d");
-    const w = canvas.width = canvas.clientWidth * devicePixelRatio;
-    const h = canvas.height = canvas.clientHeight * devicePixelRatio;
-    ctx.clearRect(0, 0, w, h);
-    ctx.strokeStyle = "#c9622f";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    const step = Math.max(1, Math.floor(mono.length / w));
-    for (let x = 0; x < w; x++) {
-      let min = 1, max = -1;
-      const start = x * step;
-      for (let i = start; i < start + step && i < mono.length; i++) {
-        if (mono[i] < min) min = mono[i];
-        if (mono[i] > max) max = mono[i];
-      }
-      const yMin = (1 - (min * 0.9 + 1) / 2) * h;
-      const yMax = (1 - (max * 0.9 + 1) / 2) * h;
-      ctx.moveTo(x, yMin);
-      ctx.lineTo(x, yMax);
-    }
-    ctx.stroke();
-  }
-
-  function encodeWav(samples, sr) {
-    const bytesPerSample = 2;
-    const buffer = new ArrayBuffer(44 + samples.length * bytesPerSample);
-    const view = new DataView(buffer);
-    const writeStr = (off, str) => { for (let i = 0; i < str.length; i++) view.setUint8(off + i, str.charCodeAt(i)); };
-    writeStr(0, "RIFF");
-    view.setUint32(4, 36 + samples.length * bytesPerSample, true);
-    writeStr(8, "WAVE");
-    writeStr(12, "fmt ");
-    view.setUint32(16, 16, true);
-    view.setUint16(20, 1, true);
-    view.setUint16(22, 1, true);
-    view.setUint32(24, sr, true);
-    view.setUint32(28, sr * bytesPerSample, true);
-    view.setUint16(32, bytesPerSample, true);
-    view.setUint16(34, 16, true);
-    writeStr(36, "data");
-    view.setUint32(40, samples.length * bytesPerSample, true);
-    let off = 44;
-    for (let i = 0; i < samples.length; i++) {
-      const s = Math.max(-1, Math.min(1, samples[i]));
-      view.setInt16(off, s < 0 ? s * 0x8000 : s * 0x7fff, true);
-      off += 2;
-    }
-    return new Blob([view], { type: "audio/wav" });
-  }
-
-  function showResult(outMono, outSr) {
-    $("resultPanel").style.display = "block";
-    drawWave($("waveOrig"), originalMono);
-    drawWave($("waveOut"), outMono);
-
-    const origBlob = encodeWav(originalMono, originalSr);
-    $("audioOrig").src = URL.createObjectURL(origBlob);
-
-    const outBlob = encodeWav(outMono, outSr);
-    $("audioOut").src = URL.createObjectURL(outBlob);
-    $("downloadLink").href = URL.createObjectURL(outBlob);
-
-    $("resultPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }
-})();
+};
+let lang = (navigator.language || "ru").startsWith("ru") ? "ru" : "en";
+function apply() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = T[lang][el.dataset.i18n]; });
+  document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === lang));
+}
+document.querySelectorAll(".lang button").forEach(b => b.onclick = () => { lang = b.dataset.lang; apply(); });
+apply();
 </script>
 </body>
 </html>
