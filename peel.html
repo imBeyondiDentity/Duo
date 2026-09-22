@@ -188,7 +188,6 @@ button:focus-visible,.drop:focus-within,a:focus-visible{outline:2px solid var(--
 
   <footer>
     <span data-i18n="privacy"></span>
-    <span data-i18n="cli"></span>
   </footer>
 
   <div class="back-row">
@@ -223,8 +222,7 @@ const T = {
     fades: "Фейды", none: "Нет", s1: "1 с", s3: "3 с", s5: "5 с",
     processing: "Обрабатываю…",
     limited: v => "Готово · пик не дал поднять громкость выше, вышло " + v + " LUFS",
-    privacy: "Файлы обрабатываются локально в браузере. ",
-    cli: "Для пакетной обработки есть CLI: peel.py в репозитории."
+    privacy: "Файлы обрабатываются локально в браузере. Другие серверы не участвуют.",
   },
   en: {
     kicker: "AUDIO EXTRACTOR",
@@ -247,8 +245,7 @@ const T = {
     fades: "Fades", none: "None", s1: "1 s", s3: "3 s", s5: "5 s",
     processing: "Processing…",
     limited: v => "Done · the peak limit capped loudness at " + v + " LUFS",
-    privacy: "Files are processed locally in your browser. ",
-    cli: "For batch jobs there's a CLI: peel.py in the repo."
+    privacy: "Files are processed locally in your browser. No other servers involved.",
   }
 };
 let lang = (navigator.language || "ru").startsWith("ru") ? "ru" : "en";
