@@ -63,12 +63,12 @@
 
   /* dropzone, matching the Peel reference */
   #dropzone{
-    border:1.5px dashed var(--accent); border-radius:18px;
+    border:1px solid var(--line); border-radius:18px;
     background:transparent;
     padding:64px 24px; text-align:center; cursor:pointer;
-    transition:background .15s ease;
+    transition:border-color .15s ease,background .15s ease;
   }
-  #dropzone:hover, #dropzone.drag{ background:#1a1411; }
+  #dropzone:hover, #dropzone.drag{ border-color:var(--accent); background:#1a1411; }
   #dropzone .dz-primary{
     font-family:var(--serif); font-weight:600; color:var(--ink);
     font-size:clamp(24px, 6.5vw, 32px); margin-bottom:12px;
