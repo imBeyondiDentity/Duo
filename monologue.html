@@ -118,6 +118,8 @@
   .back-link{ display:inline-flex; align-items:center; gap:6px; color:var(--ink-dim); font-family:var(--mono); font-size:12px; text-decoration:none; border:1px solid var(--line); border-radius:999px; padding:8px 16px; transition:border-color .15s,color .15s; }
   .back-link:hover{ border-color:var(--accent); color:var(--ink); }
   .back-row{ text-align:right; margin-top:32px; }
+  .signature{ margin-top:24px; text-align:center; color:var(--ink-dim); font-size:12px; }
+  .signature i{ display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--accent); margin-right:8px; vertical-align:middle; font-style:normal; }
 
   @media (max-width:520px){
     .wrap{ padding-top:76px; }
@@ -199,6 +201,7 @@
   <footer data-i18n="footer"></footer>
 
   <div class="back-row"><a class="back-link" href="index.html" data-i18n="back"></a></div>
+  <div class="signature"><i></i>Monologue</div>
 </div>
 
 <script>
@@ -212,7 +215,7 @@
     en: {
       kicker: "SING TO SPEECH",
       back: "← Back",
-      lede: "Upload a solo vocal — a cappella, no music underneath. Monologue clones the voice from it and reads any text you give it in that same voice: the lyrics, or anything else.",
+      lede: "Upload a solo vocal — a cappella, no music underneath. Monologue clones the voice and reads any text back in it: the lyrics, or anything else.",
       dzPrimary: "Drop a solo vocal here",
       dzSecondary: "or click to choose · wav, mp3, flac, m4a",
       lblApiKey: "ELEVENLABS API KEY", chkRemember: "remember this key in this browser only",
@@ -221,7 +224,7 @@
       chkKeepVoice: "keep the cloned voice in my ElevenLabs account after",
       btnSpeak: "Read it in this voice", hintCloneSample: "The clone takes its likeness from the uploaded vocal. Longer, cleaner takes (1–2 minutes) give a closer match. Instant voice cloning needs a paid ElevenLabs plan (Starter or higher).",
       lblOriginal: "ORIGINAL", lblConverted: "CONVERTED", btnDownload: "Download WAV",
-      footer: "Your vocal and text go straight from your browser to ElevenLabs under your own API key — nothing passes through any other server. For a free, fully local option there's a CLI: monologue.py in the repo.",
+      footer: "Your vocal and text go straight from your browser to ElevenLabs under your own API key — no other server involved. For a free, local option there's a CLI: monologue.py in the repo.",
       statusDecoding: "Decoding audio…", statusDone: "Done.",
       statusNeedKey: "Paste your ElevenLabs API key first.",
       statusUploadingTranscribe: "Uploading for transcription…",
