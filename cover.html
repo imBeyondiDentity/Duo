@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cover</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230e0d0c'/%3E%3Crect x='14' y='14' width='36' height='36' rx='6' fill='none' stroke='%23ff6a1a' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23ff6a1a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e0d0c; --panel:#171513; --line:#2c2824; --text:#ece6de;
+  --muted:#8f877d; --accent:#ff6a1a; --accent-dim:#5a2a10;
+  --serif:"Playfair Display",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0;background:var(--bg);color:var(--text)}
+body{font-family:var(--mono);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+main{max-width:640px;margin:0 auto;padding:88px 20px 64px;position:relative}
+.lang{position:absolute;top:48px;right:20px;display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.lang button{background:none;border:0;color:var(--muted);font:inherit;font-size:12px;padding:6px 12px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--text);color:var(--bg)}
+.kicker{display:block;text-align:center;color:var(--accent);font-size:12px;letter-spacing:.18em;margin-bottom:18px}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(56px,14vw,92px);line-height:.9;margin:0;letter-spacing:-.02em;text-align:center}
+.lede{color:var(--muted);text-align:center;max-width:42ch;margin:16px auto 44px}
+.drop{display:block;border:1px solid var(--accent);border-radius:18px;background:var(--panel);padding:26px 24px;text-align:center;cursor:pointer;margin-bottom:16px;transition:background .15s}
+.drop.over{background:#1a1411}
+.drop input{display:none}
+.drop .t{font-size:14px}
+.drop .s{color:var(--muted);font-size:12px;margin-top:4px;word-break:break-all}
+.drop.ok .s{color:var(--text)}
+.preview{display:none;margin:0 auto 16px;width:160px;height:160px;border-radius:12px;border:1px solid var(--line);object-fit:cover}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+.chip{border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:12px;color:var(--muted);cursor:pointer;background:none;font-family:inherit}
+.chip.on{border-color:var(--accent);color:var(--text)}
+.go{display:block;width:100%;background:var(--accent);color:var(--bg);border:0;border-radius:999px;padding:15px;font:inherit;font-weight:600;font-size:14px;cursor:pointer}
+.go:disabled{opacity:.35;cursor:not-allowed}
+.msg{text-align:center;min-height:22px;margin-top:14px;font-size:13px;color:var(--muted)}
+.msg.err{color:#ff5a4a}
+.msg a{color:var(--accent)}
+.back-row{display:flex;justify-content:space-between;align-items:center;margin-top:32px;gap:12px}
+.back-link{color:var(--muted);text-decoration:none;font-size:12px;border:1px solid var(--line);border-radius:999px;padding:7px 14px}
+.back-link:hover,.back-link:focus-visible{color:var(--text);border-color:var(--accent)}
+.signature{margin-top:24px;text-align:center;color:var(--muted);font-size:12px}
+.signature i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:middle;font-style:normal}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (max-width:520px){ main{padding-top:76px} .lang{top:20px} }
+</style>
+</head>
+<body>
+<main>
+  <div class="lang" role="group" aria-label="Language">
+    <button id="bRU" aria-pressed="true">RU</button>
+    <button id="bEN" aria-pressed="false">EN</button>
+  </div>
+  <span class="kicker" data-i18n="kicker"></span>
+  <h1>Cover</h1>
+  <p class="lede" data-i18n="lede"></p>
+
+<label class="drop" id="dAudio">
+  <input type="file" id="fAudio" accept="audio/*,.mp3,.wav">
+  <div class="t" data-i18n="pickAudio"></div>
+  <div class="s" id="nAudio"></div>
+</label>
+<label class="drop" id="dImg">
+  <input type="file" id="fImg" accept="image/*,.jpg,.jpeg,.png">
+  <div class="t" data-i18n="pickImg"></div>
+  <div class="s" id="nImg"></div>
+</label>
+<img class="preview" id="prev" alt="">
+
+<div class="chips">
+  <button class="chip on" id="cSq" data-i18n="square"></button>
+  <button class="chip" id="cOrig" data-i18n="orig"></button>
+</div>
+
+<button class="go" id="go" disabled data-i18n="go"></button>
+<div class="msg" id="msg"></div>
+
+<div class="back-row">
+  <a class="back-link" href="index.html" data-i18n="back"></a>
+  <a class="back-link" href="mailto:imbeyondidentity@gmail.com" data-i18n="contact"></a>
+</div>
+<div class="signature"><i></i>Cover</div>
+</main>
+
+<script>
+const T={
+ en:{kicker:"COVER ART EMBEDDER",lede:"Add a cover image to an MP3 or WAV. Runs in your browser, nothing is uploaded.",
+  pickAudio:"Choose audio (MP3 or WAV)",pickImg:"Choose image (JPG or PNG)",
+  square:"Square 1000 px",orig:"Keep original",go:"Embed cover",back:"← Back",contact:"Contact",
+  work:"Working…",done:"Done. Download:",errAudio:"Unsupported audio. Use MP3 or WAV.",errWav:"Broken WAV file.",errImg:"Could not read the image.",
+  wavNote:"WAV: some players still show a blank icon. MP3 is more reliable."},
+ ru:{kicker:"ОБЛОЖКА В ТРЕК",lede:"Вшивает картинку-обложку в MP3 или WAV. Работает в браузере, ничего не загружается.",
+  pickAudio:"Выбери аудио (MP3 или WAV)",pickImg:"Выбери картинку (JPG или PNG)",
+  square:"Квадрат 1000 px",orig:"Оригинал",go:"Вшить обложку",back:"← Обратно",contact:"Написать",
+  work:"Работаю…",done:"Готово. Скачать:",errAudio:"Формат не подходит. Нужен MP3 или WAV.",errWav:"Повреждённый WAV.",errImg:"Не удалось прочитать картинку.",
+  wavNote:"WAV: некоторые плееры всё равно покажут пустую иконку. MP3 надёжнее."}
+};
+let L=(navigator.language||'ru').startsWith('ru')?'ru':'en';
+function applyLang(){
+  document.documentElement.lang=L;
+  document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=T[L][e.dataset.i18n]);
+  bRU.setAttribute('aria-pressed',L==='ru');bEN.setAttribute('aria-pressed',L==='en');
+}
+bRU.onclick=()=>{L='ru';applyLang()};bEN.onclick=()=>{L='en';applyLang()};
+
+let audio=null,img=null,square=true;
+const $=id=>document.getElementById(id);
+function upd(){$('go').disabled=!(audio&&img)}
+function bind(zone,input,setter){
+  input.onchange=()=>{if(input.files[0])setter(input.files[0])};
+  zone.ondragover=e=>{e.preventDefault();zone.classList.add('over')};
+  zone.ondragleave=()=>zone.classList.remove('over');
+  zone.ondrop=e=>{e.preventDefault();zone.classList.remove('over');if(e.dataTransfer.files[0])setter(e.dataTransfer.files[0])};
+}
+bind($('dAudio'),$('fAudio'),f=>{audio=f;$('nAudio').textContent=f.name;$('dAudio').classList.add('ok');upd()});
+bind($('dImg'),$('fImg'),f=>{img=f;$('nImg').textContent=f.name;$('dImg').classList.add('ok');
+  const p=$('prev');p.src=URL.createObjectURL(f);p.style.display='block';upd()});
+$('cSq').onclick=()=>{square=true;$('cSq').classList.add('on');$('cOrig').classList.remove('on')};
+$('cOrig').onclick=()=>{square=false;$('cOrig').classList.add('on');$('cSq').classList.remove('on')};
+
+function setMsg(html,err){const m=$('msg');m.className='msg'+(err?' err':'');m.innerHTML=html}
+
+async function prepImage(file){
+  if(!square){
+    const mime=file.type==='image/png'?'image/png':'image/jpeg';
+    return {mime,data:new Uint8Array(await file.arrayBuffer())};
+  }
+  const bmp=await createImageBitmap(file);
+  const s=Math.min(bmp.width,bmp.height),S=1000;
+  const c=document.createElement('canvas');c.width=c.height=S;
+  c.getContext('2d').drawImage(bmp,(bmp.width-s)/2,(bmp.height-s)/2,s,s,0,0,S,S);
+  const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',0.92));
+  return {mime:'image/jpeg',data:new Uint8Array(await blob.arrayBuffer())};
+}
+
+const ss=b=>((b[0]&127)<<21)|((b[1]&127)<<14)|((b[2]&127)<<7)|(b[3]&127);
+const toSS=n=>[(n>>21)&127,(n>>14)&127,(n>>7)&127,n&127];
+const be32=n=>[(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255];
+const ascii=s=>Array.from(s,c=>c.charCodeAt(0));
+function cat(parts){let n=0;parts.forEach(p=>n+=p.length);const o=new Uint8Array(n);let i=0;parts.forEach(p=>{o.set(p,i);i+=p.length});return o}
+
+// Build ID3v2 tag. keep = existing frames (Uint8Array), ver = 3 or 4
+function buildTag(pic,keep,ver){
+  const body=cat([new Uint8Array([0]),new Uint8Array(ascii(pic.mime)),new Uint8Array([0,3,0]),pic.data]);
+  const size=ver===4?toSS(body.length):be32(body.length);
+  const frame=cat([new Uint8Array([...ascii('APIC'),...size,0,0]),body]);
+  const all=cat([keep,frame]);
+  return cat([new Uint8Array([...ascii('ID3'),ver,0,0,...toSS(all.length)]),all]);
+}
+function keptFrames(b){
+  if(b.length<10||String.fromCharCode(b[0],b[1],b[2])!=='ID3')return {keep:new Uint8Array(0),ver:3,end:0};
+  const ver=b[3],flags=b[5],size=ss(b.subarray(6,10));
+  const end=10+size+((flags&0x10)?10:0);
+  if((ver!==3&&ver!==4)||(flags&0x40)||(flags&0x80&&ver===3&&false))return {keep:new Uint8Array(0),ver:3,end};
+  const out=[];let p=10;
+  while(p+10<=10+size){
+    if(b[p]===0)break;
+    const id=String.fromCharCode(b[p],b[p+1],b[p+2],b[p+3]);
+    const fs=ver===4?ss(b.subarray(p+4,p+8)):((b[p+4]<<24)|(b[p+5]<<16)|(b[p+6]<<8)|b[p+7])>>>0;
+    if(p+10+fs>10+size)break;
+    if(id!=='APIC')out.push(b.subarray(p,p+10+fs));
+    p+=10+fs;
+  }
+  return {keep:cat(out),ver,end};
+}
+function embedMp3(b,pic){
+  const k=keptFrames(b);
+  return cat([buildTag(pic,k.keep,k.ver),b.subarray(k.end)]);
+}
+function embedWav(b,pic){
+  const dv=new DataView(b.buffer,b.byteOffset,b.byteLength);
+  const tag=(o)=>String.fromCharCode(b[o],b[o+1],b[o+2],b[o+3]);
+  if(b.length<12||tag(0)!=='RIFF'||tag(8)!=='WAVE')throw new Error('wav');
+  const parts=[];let p=12;
+  while(p+8<=b.length){
+    const id=tag(p);let sz=dv.getUint32(p+4,true);
+    let end=p+8+sz+(sz&1);
+    if(end>b.length){sz=b.length-p-8;end=b.length}
+    if(id.toLowerCase()!=='id3 ')parts.push(b.subarray(p,end));
+    p=end;
+  }
+  let t=buildTag(pic,new Uint8Array(0),3);
+  const pad=t.length&1;
+  const hdr=new Uint8Array(8);hdr.set(ascii('id3 '));new DataView(hdr.buffer).setUint32(4,t.length,true);
+  const chunk=cat([hdr,t,new Uint8Array(pad)]);
+  const body=cat([new Uint8Array(ascii('WAVE')),...parts,chunk]);
+  const top=new Uint8Array(8);top.set(ascii('RIFF'));new DataView(top.buffer).setUint32(4,body.length,true);
+  return cat([top,body]);
+}
+
+$('go').onclick=async()=>{
+  const t=T[L];setMsg(t.work);$('go').disabled=true;
+  try{
+    const name=audio.name,ext=(name.split('.').pop()||'').toLowerCase();
+    const isWav=ext==='wav'||audio.type.includes('wav'),isMp3=ext==='mp3'||audio.type==='audio/mpeg';
+    if(!isWav&&!isMp3){setMsg(t.errAudio,true);return}
+    let pic;try{pic=await prepImage(img)}catch(e){setMsg(t.errImg,true);return}
+    const src=new Uint8Array(await audio.arrayBuffer());
+    let out;
+    try{out=isWav?embedWav(src,pic):embedMp3(src,pic)}catch(e){setMsg(isWav?t.errWav:t.errAudio,true);return}
+    const base=name.replace(/\.[^.]+$/,'');
+    const url=URL.createObjectURL(new Blob([out],{type:isWav?'audio/wav':'audio/mpeg'}));
+    const fn=base+'-cover.'+(isWav?'wav':'mp3');
+    setMsg(t.done+' <a href="'+url+'" download="'+fn.replace(/"/g,'')+'">'+fn.replace(/</g,'&lt;')+'</a>'+(isWav?'<br>'+t.wavNote:''));
+  }finally{upd()}
+};
+applyLang();
+</script>
+</body>
+</html>
