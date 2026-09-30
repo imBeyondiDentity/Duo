@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Duo</title>
-<link rel="icon" href="data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'>%20<rect%20width='100'%20height='100'%20rx='20'%20fill='%230e0d0c'/>%20<circle%20cx='39'%20cy='50'%20r='21'%20fill='none'%20stroke='%23ff6a1a'%20stroke-width='7'/>%20<circle%20cx='63'%20cy='50'%20r='21'%20fill='none'%20stroke='%23ff6a1a'%20stroke-width='7'/>%20</svg>">
+<title>Trio</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> <rect width='100' height='100' rx='20' fill='%230e0d0c'/> <circle cx='50' cy='34' r='17' fill='none' stroke='%23ff6a1a' stroke-width='6'/> <circle cx='35' cy='60' r='17' fill='none' stroke='%23ff6a1a' stroke-width='6'/> <circle cx='65' cy='60' r='17' fill='none' stroke='%23ff6a1a' stroke-width='6'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -52,7 +52,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-off
   </div>
 
   <span class="kicker" data-i18n="kicker"></span>
-  <h1>Duo</h1>
+  <h1>Trio</h1>
   <p class="lede" data-i18n="lede"></p>
 
   <div class="cards">
@@ -62,24 +62,29 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-off
     <a class="card" href="monologue.html">
       <b>Monologue</b> <span data-i18n="mono"></span>
     </a>
+    <a class="card" href="cover.html">
+      <b>Cover</b> <span data-i18n="cover"></span>
+    </a>
   </div>
 
-  <footer><i></i>Duo</footer>
+  <footer><i></i>Trio</footer>
 </main>
 
 <script>
 const T = {
   ru: {
     kicker: "НАБОР ДЛЯ АУДИО",
-    lede: "Два маленьких инструмента для звука. Ничего никуда не загружается — всё работает прямо в браузере.",
+    lede: "Три маленьких инструмента для звука. Ничего никуда не загружается — всё работает прямо в браузере.",
     peel: "— достаёт звук из видео и сохраняет в MP3 или WAV",
-    mono: "— превращает пение в речь тем же голосом"
+    mono: "— превращает пение в речь тем же голосом",
+    cover: "— вшивает обложку в MP3 или WAV"
   },
   en: {
     kicker: "AUDIO TOOLKIT",
-    lede: "Two small audio tools. Nothing is uploaded anywhere — everything runs right in your browser.",
+    lede: "Three small audio tools. Nothing is uploaded anywhere — everything runs right in your browser.",
     peel: "— pulls the sound out of a video and saves it as MP3 or WAV",
-    mono: "— turns singing into speech, same voice"
+    mono: "— turns singing into speech, same voice",
+    cover: "— embeds cover art into MP3 or WAV"
   }
 };
 let lang = (navigator.language || "ru").startsWith("ru") ? "ru" : "en";
