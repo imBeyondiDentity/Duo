@@ -32,12 +32,6 @@ outside this repository — currently [Airband](https://imbeyondidentity.github.
 (the Suno prompt engine). They open in a new tab, so Trio doesn't get
 lost in the background.
 
-## Publishing to GitHub Pages
-
-1. Create a repository, push the folder's contents to the root
-2. Settings → Pages → Source: Deploy from a branch
-3. Branch: `main`, folder `/ (root)`
-4. Within a minute you'll have an address like `https://<username>.github.io/trio/`
 
 ## Structure
 
