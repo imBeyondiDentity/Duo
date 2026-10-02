@@ -35,13 +35,6 @@ lost in the background.
 
 ## Structure
 
-```
-index.html       the hub: heading, three cards, "other projects" row, RU/EN
-peel.html        Peel in full, a standalone self-contained file
-monologue.html   Monologue in full, a standalone self-contained file
-cover.html       Cover in full, a standalone self-contained file
-```
-
 Each HTML file is self-contained — styles and logic are inlined, no
 external links out to a `.css`/`.js` file. Opened on its own (through a
 chat preview, say), any one of them works by itself; following a link
