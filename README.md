@@ -2,58 +2,60 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Хаб-страница на три маленьких аудио-инструмента. Сама по себе ничего не
-обрабатывает — просто карточки-ссылки на три отдельных браузерных
-приложения, объединённых общим входом и общим дизайном.
+A hub page for three small audio tools. It doesn't process anything
+itself — just link cards pointing to three separate browser apps, tied
+together by one entry point and one shared design.
 
-Работает целиком на клиенте. Ничего никуда не загружается — каждый из
-трёх инструментов сам по себе HTML/JS, считает всё прямо в браузере.
-Разворачивается на GitHub Pages как статика, без сборки и без зависимостей.
+Runs entirely client-side. Nothing gets uploaded anywhere — each of the
+three tools is its own HTML/JS file, working everything out right in the
+browser. Deploys to GitHub Pages as static files, no build step, no
+dependencies.
 
-## Инструменты
+## Tools
 
-| Инструмент | Что делает |
+| Tool | What it does |
 |---|---|
-| [Peel](peel.html) | достаёт звук из видео, сохраняет в MP3 или WAV |
-| [Monologue](monologue.html) | превращает пение в речь тем же голосом |
-| [Cover](cover.html) | вшивает обложку в MP3 или WAV |
+| [Peel](peel.html) | pulls the sound out of a video, saves it as MP3 or WAV |
+| [Monologue](monologue.html) | turns singing into speech, same voice |
+| [Cover](cover.html) | embeds cover art into MP3 or WAV |
 
-Каждый — самостоятельный файл, может открываться и жить отдельно от
-хаба; `index.html` просто даёт им общую точку входа и переключатель
-языка (RU/EN, по `navigator.language` с ручным переключением).
+Each one is a standalone file and can be opened and used on its own,
+away from the hub; `index.html` just gives them a shared front door and
+a language toggle (RU/EN, defaulting off `navigator.language` with a
+manual override).
 
-## Другие проекты
+## Other projects
 
-На хабе также есть блок коротких ссылок на инструменты за пределами
-этого репозитория — сейчас это [Airband](https://imbeyondidentity.github.io/airband/)
-(восстановление верха в треках из Suno) и [Music DNA](https://imbeyondidentity.github.io/identity-prompt-engine/)
-(движок Suno-промптов). Открываются в новой вкладке, чтобы не терять
-Trio на фоне.
+The hub also carries a row of short links out to tools that live
+outside this repository — currently [Airband](https://imbeyondidentity.github.io/airband/)
+(restores the top end cut from Suno tracks) and [Music DNA](https://imbeyondidentity.github.io/identity-prompt-engine/)
+(the Suno prompt engine). They open in a new tab, so Trio doesn't get
+lost in the background.
 
-## Публикация на GitHub Pages
+## Publishing to GitHub Pages
 
-1. Создать репозиторий, залить содержимое папки в корень
+1. Create a repository, push the folder's contents to the root
 2. Settings → Pages → Source: Deploy from a branch
-3. Branch: `main`, папка `/ (root)`
-4. Через минуту адрес вида `https://<ник>.github.io/trio/`
+3. Branch: `main`, folder `/ (root)`
+4. Within a minute you'll have an address like `https://<username>.github.io/trio/`
 
-## Структура
+## Structure
 
 ```
-index.html       хаб: заголовок, три карточки, блок «другие проекты», RU/EN
-peel.html        Peel целиком, отдельный самодостаточный файл
-monologue.html   Monologue целиком, отдельный самодостаточный файл
-cover.html       Cover целиком, отдельный самодостаточный файл
+index.html       the hub: heading, three cards, "other projects" row, RU/EN
+peel.html        Peel in full, a standalone self-contained file
+monologue.html   Monologue in full, a standalone self-contained file
+cover.html       Cover in full, a standalone self-contained file
 ```
 
-Каждый HTML-файл самодостаточен — стили и логика зашиты внутрь, внешних
-ссылок между `.css`/`.js` нет. Открытый по отдельности файл (например,
-через предпросмотр в чате) работает сам по себе; переход по ссылке
-между файлами резолвится только когда все они лежат рядом на настоящем
-хостинге.
+Each HTML file is self-contained — styles and logic are inlined, no
+external links out to a `.css`/`.js` file. Opened on its own (through a
+chat preview, say), any one of them works by itself; following a link
+from one file to another only resolves once they're all sitting
+together on real hosting.
 
-## Лицензия
+## Licence
 
-MIT — см. [`LICENSE`](LICENSE). Используй, форкай, меняй под себя,
-включая коммерческое использование. Единственное условие — сохранить
-копирайт и текст лицензии в копиях.
+MIT — see [`LICENCE`](LICENSE). Use it, fork it, change it, commercial
+use included. The only condition is keeping the copyright notice and
+licence text in copies.
