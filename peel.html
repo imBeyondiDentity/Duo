@@ -33,7 +33,7 @@ h1{font-family:var(--serif);font-weight:900;font-size:clamp(64px,14vw,112px);lin
 
 .drop{display:block;border:1px solid var(--line);border-radius:18px;padding:44px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
 .drop:hover,.drop.over{border-color:var(--accent);background:#1a1411}
-.drop strong{display:block;font-family:var(--serif);font-weight:400;font-size:30px;margin-bottom:6px}
+.drop strong{display:block;font-family:var(--serif);font-weight:400;font-size:30px;margin-bottom:6px;color:var(--accent)}
 .drop span{color:var(--muted);font-size:12px}
 .drop input{position:absolute;width:1px;height:1px;opacity:0}
 
@@ -75,6 +75,7 @@ footer a{color:var(--text)}
 .back-row{display:flex;justify-content:space-between;align-items:center;margin-top:32px;gap:12px}
 .signature{margin-top:24px;text-align:center;color:var(--muted);font-size:12px}
 .signature i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:middle;font-style:normal}
+.signature i.right{margin-right:0;margin-left:8px}
 button:focus-visible,.drop:focus-within,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @media (max-width:520px){
   main{padding-top:76px}
@@ -194,7 +195,7 @@ button:focus-visible,.drop:focus-within,a:focus-visible{outline:2px solid var(--
     <a class="back-link" href="index.html" data-i18n="back"></a>
     <a class="back-link" href="mailto:imbeyondidentity@gmail.com" data-i18n="contact"></a>
   </div>
-  <div class="signature"><i></i>Peel</div>
+  <div class="signature"><i></i>Peel<i class="right"></i></div>
 </main>
 
 
