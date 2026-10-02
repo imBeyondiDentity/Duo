@@ -31,11 +31,18 @@ main{max-width:640px;margin:0 auto;padding:88px 20px 64px;position:relative}
 h1{font-family:var(--serif);font-weight:900;font-size:clamp(56px,14vw,92px);line-height:.9;margin:0;letter-spacing:-.02em;text-align:center}
 .lede{color:var(--muted);text-align:center;max-width:42ch;margin:16px auto 44px}
 
-.cards{display:flex;flex-direction:column;gap:16px}
-.card{display:block;border:1px solid var(--line);border-radius:18px;padding:26px 24px;text-decoration:none;color:inherit;transition:border-color .15s,background .15s}
+.cards{display:grid;grid-auto-rows:1fr;gap:16px}
+.card{display:flex;align-items:center;border:1px solid var(--line);border-radius:18px;padding:26px 24px;text-decoration:none;color:inherit;transition:border-color .15s,background .15s}
 .card:hover,.card:focus-visible{border-color:var(--accent);background:#1a1411}
 .card b{font-family:var(--serif);font-weight:900;color:var(--accent);font-size:20px;font-style:normal}
 .card span{color:var(--muted)}
+
+.more{margin-top:40px;text-align:center}
+.more-label{display:block;color:var(--muted);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:9px 18px;text-decoration:none;color:var(--text);font-size:13px;transition:border-color .15s,background .15s}
+.chip:hover,.chip:focus-visible{border-color:var(--accent);background:#1a1411}
+.chip i{font-style:normal;color:var(--muted);font-size:12px}
 
 footer{margin-top:48px;text-align:center;color:var(--muted);font-size:12px}
 footer i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:middle;font-style:normal}
@@ -57,14 +64,22 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-off
 
   <div class="cards">
     <a class="card" href="peel.html">
-      <b>Peel</b> <span data-i18n="peel"></span>
+      <div><b>Peel</b> <span data-i18n="peel"></span></div>
     </a>
     <a class="card" href="monologue.html">
-      <b>Monologue</b> <span data-i18n="mono"></span>
+      <div><b>Monologue</b> <span data-i18n="mono"></span></div>
     </a>
     <a class="card" href="cover.html">
-      <b>Cover</b> <span data-i18n="cover"></span>
+      <div><b>Cover</b> <span data-i18n="cover"></span></div>
     </a>
+  </div>
+
+  <div class="more">
+    <span class="more-label" data-i18n="moreLabel"></span>
+    <div class="chips">
+      <a class="chip" href="https://imbeyondidentity.github.io/airband/" target="_blank" rel="noopener">Airband <i>↗</i></a>
+      <a class="chip" href="https://imbeyondidentity.github.io/identity-prompt-engine/" target="_blank" rel="noopener">Music DNA <i>↗</i></a>
+    </div>
   </div>
 
   <footer><i></i>Trio</footer>
@@ -77,14 +92,16 @@ const T = {
     lede: "Три маленьких инструмента для звука. Ничего никуда не загружается — всё работает прямо в браузере.",
     peel: "— достаёт звук из видео и сохраняет в MP3 или WAV",
     mono: "— превращает пение в речь тем же голосом",
-    cover: "— вшивает обложку в MP3 или WAV"
+    cover: "— вшивает обложку в MP3 или WAV",
+    moreLabel: "Другие проекты"
   },
   en: {
     kicker: "AUDIO TOOLKIT",
     lede: "Three small audio tools. Nothing is uploaded anywhere — everything runs right in your browser.",
     peel: "— pulls the sound out of a video and saves it as MP3 or WAV",
     mono: "— turns singing into speech, same voice",
-    cover: "— embeds cover art into MP3 or WAV"
+    cover: "— embeds cover art into MP3 or WAV",
+    moreLabel: "Other projects"
   }
 };
 let lang = (navigator.language || "ru").startsWith("ru") ? "ru" : "en";
