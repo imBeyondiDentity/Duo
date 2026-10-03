@@ -1,6 +1,8 @@
 # Trio
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Licence: MIT](https://img.shields.io/badge/Licence-MIT-yellow.svg)](LICENSE)
+
+[English version](README.md)
 
 Хаб-страница на три маленьких аудио-инструмента. Сама по себе ничего не
 обрабатывает — просто карточки-ссылки на три отдельных браузерных

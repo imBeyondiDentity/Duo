@@ -1,6 +1,8 @@
 # Trio
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Licence: MIT](https://img.shields.io/badge/Licence-MIT-yellow.svg)](LICENSE)
+
+[Русская версия](README_ru.md)
 
 A hub page for three small audio tools. It doesn't process anything
 itself — just link cards pointing to three separate browser apps, tied
@@ -32,8 +34,21 @@ outside this repository — currently [Airband](https://imbeyondidentity.github.
 (the Suno prompt engine). They open in a new tab, so Trio doesn't get
 lost in the background.
 
+## Publishing to GitHub Pages
+
+1. Create a repository, push the folder's contents to the root
+2. Settings → Pages → Source: Deploy from a branch
+3. Branch: `main`, folder `/ (root)`
+4. Within a minute you'll have an address like `https://<username>.github.io/trio/`
 
 ## Structure
+
+```
+index.html       the hub: heading, three cards, "other projects" row, RU/EN
+peel.html        Peel in full, a standalone self-contained file
+monologue.html   Monologue in full, a standalone self-contained file
+cover.html       Cover in full, a standalone self-contained file
+```
 
 Each HTML file is self-contained — styles and logic are inlined, no
 external links out to a `.css`/`.js` file. Opened on its own (through a
